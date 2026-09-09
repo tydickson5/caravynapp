@@ -120,7 +120,7 @@ struct TripService {
     func getUsersTrips(userId: String) async -> [Trip] {
         
         do {
-            let fetched: [Trip] = try await SupabaseHandler.client.from("trips").select().eq("user_id", value: userId).execute().value
+            let fetched: [Trip] = try await SupabaseHandler.client.from("trips").select().eq("user_id", value: userId).order("created_at", ascending: true).execute().value
             return fetched
         } catch {
             print(error)

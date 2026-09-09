@@ -23,8 +23,8 @@ struct OtherUserView: View {
     @State var user: AppUser
     
     var body: some View {
-        ScrollView{
-            VStack{
+        NavigationStack{
+            ScrollView{
                 //profile info
                 HStack{
                     Text(user.username)
@@ -64,60 +64,13 @@ struct OtherUserView: View {
                 }
                 
                 
-                //posts
-                ForEach(userPosts){ post in
-                    NavigationLink(destination: PostDetailView(post: post), label: {
-                        
-                        HStack{
-                            if let image = retrievePostService.imageURL(path: post.media_url!) {
-                                AsyncImage(url: image) { phase in
-                                    switch phase {
-                                    case .success(let img):
-                                        img
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                    case .failure:
-                                        Image(systemName: "photo")
-                                            .foregroundStyle(.gray)
-                                    default:
-                                        ProgressView()
-                                    }
-                                }
-                                .frame(width: 130, height: 200)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                            }
-                            Spacer()
-                            VStack{
-                                Text(post.caption)
-                                    .font(.footnote)
-                                    .multilineTextAlignment(.leading)
+                PostListElement(posts: $userPosts)
+            
 
-                                Spacer()
-                                HStack{
-                                    Text(dateFormatterService.formattedDate(post.created_at))
-                                        .font(.footnote)
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .imageScale(.large)
-                                }
-                                
-                            }
-                            
-                        }
-                        .padding(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
-                        
-                    })
-                    .padding(.bottom, 10)
-                    
-                }
             }
             .padding()
-
         }
+        
         .refreshable {
             //reload posts
             Task {

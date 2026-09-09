@@ -11,14 +11,14 @@ import Foundation
 enum SupabaseHandler
 {
     
-    static let ipAddress: String =  "172.25.126.66"
+    static let ipAddress: String =  "172.25.94.43"
     
     static let localBackendURL: String = "http://\(ipAddress):3000"
     
     static let productionBackendURL: String = "https://activityapp-backend.fly.dev"
     
     //dev prod
-    #if true
+    #if false
         #if DEBUG
         static let backendURL = localBackendURL
         static let supabaseURL = "https://coeythfyfwzrwzuqowfe.supabase.co"

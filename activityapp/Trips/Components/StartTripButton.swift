@@ -17,7 +17,16 @@ struct StartTripButton: View {
                 createTripSheetPresented.toggle()
             }){
                 Text("Start Trip")
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 20)
+                    .tint(.white)
             }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.dark)
+                    .stroke(Color.dark.opacity(0.5), lineWidth: 2)
+            )
         }
         .sheet(isPresented: $createTripSheetPresented) {
             CreateTripView()
