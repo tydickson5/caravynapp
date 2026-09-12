@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WelcomeOnboardView: View {
     
-    //@Binding var showWelcomeOnboardView: Bool
+    @Binding var showWelcomeOnboardView: Bool
 
     var body: some View {
         GeometryReader { geo in
@@ -26,9 +26,10 @@ struct WelcomeOnboardView: View {
                         .bold()
                         .foregroundStyle(.dark)
                         .padding(.top, 80)
-
-                    Text("Welcome, the goal of this app is to show your travels to people all over the world. We want to provide a way for people to be inspired to travel new places by seeing experiences or photographs.\n\nWe would like to ask that you post only photos from travel or cool experiences as this is not a normal social media platform but more for helping people see specifically the world.\n\nThank you for taking the time to beta test this app. It is very helpful.")
+                    Spacer()
+                    Text("Welcome, the goal of this app is to show your travels to people all over the world. I want to provide a way for people to be inspired to travel new places by seeing experiences or photographs.\n\nI would like to ask that you post only photos from travel or cool experiences as this is not a normal social media platform but more for helping people see specifically the world.\n\nThank you for taking the time to beta test this app. It is very helpful.")
                         .padding()
+                        .foregroundStyle(.lightBlue)
                         .background(.white.opacity(0.8))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -37,7 +38,7 @@ struct WelcomeOnboardView: View {
                     Spacer()
 
                     Button(action: {
-                        
+                        showWelcomeOnboardView = false
                     }) {
                         Text("Continue")
                         Image(systemName: "arrow.right")
@@ -57,6 +58,4 @@ struct WelcomeOnboardView: View {
     }
 }
 
-#Preview {
-    WelcomeOnboardView()
-}
+

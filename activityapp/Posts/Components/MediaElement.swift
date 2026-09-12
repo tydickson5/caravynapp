@@ -14,10 +14,13 @@ struct MediaElement: View {
     
     @Binding var post: Post
     
+    @State var userId: String
+    
     @EnvironmentObject var postStore: PostStore
     var retrievePostService = RetrievePostService()
     
     @State private var player: AVPlayer?
+    @State private var videoURL: URL?
     
     var body: some View {
         HStack {
@@ -67,49 +70,61 @@ struct MediaElement: View {
                 
             }
         }
+
+        .overlay(alignment: .topTrailing) {
+            if(userId == post.user_id){
+                Button {
+                    saveMedia()
+                } label: {
+                    Image(systemName: "square.and.arrow.down")
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .background(.ultraThinMaterial, in: Circle())
+                }
+                .padding(10)
+            }
+            
+        }
         .task(id: post.id){
             guard post.media_type == "video" else { return }
-            
+
             if let videoPath = await retrievePostService.getVideoUpload(postId: post.id),
-               let videoURL = retrievePostService.imageURL(path: videoPath) {
-                print("Video URL: \(videoURL)")
-                player = AVPlayer(url: videoURL)
-
-                Task {
-                    for _ in 0..<10 {
-                        try? await Task.sleep(for: .seconds(1))
-
-                        guard let item = player?.currentItem else {
-                            print("No current item")
-                            continue
-                        }
-
-                        print("Status:", item.status.rawValue)
-
-                        if let error = item.error {
-                            print("Item error:", error)
-                        }
-
-                        if item.status == .readyToPlay {
-                            print("READY")
-                            break
-                        }
-
-                        if item.status == .failed {
-                            print("FAILED")
-                            break
-                        }
-                    }
-                }
+               let url = retrievePostService.imageURL(path: videoPath) {
+                videoURL = url   // cache for save button
+                player = AVPlayer(url: url)
                 player?.play()
-            } else {
-                print("Failed to get video path or URL for post \(post.id)")
             }
         }
+
         .onDisappear {
             player?.pause()
             player?.replaceCurrentItem(with: nil)
             player = nil
+        }
+    }
+    
+    private func saveMedia() {
+        if post.media_type == "image" {
+            guard let path = post.media_url,
+                  let url = retrievePostService.imageURL(path: path) else { return }
+
+            URLSession.shared.dataTask(with: url) { data, _, _ in
+                guard let data, let image = UIImage(data: data) else { return }
+                PhotoLibrarySaver.save(image: image)
+            }.resume()
+
+        } else {
+            guard let videoURL else { return }
+
+            URLSession.shared.downloadTask(with: videoURL) { tempURL, _, _ in
+                guard let tempURL else { return }
+                let destURL = FileManager.default.temporaryDirectory
+                    .appendingPathComponent(UUID().uuidString + ".mp4")
+                try? FileManager.default.moveItem(at: tempURL, to: destURL)
+                PhotoLibrarySaver.save(videoURL: destURL) { _, _ in
+                    try? FileManager.default.removeItem(at: destURL)
+                }
+            }.resume()
         }
     }
 }

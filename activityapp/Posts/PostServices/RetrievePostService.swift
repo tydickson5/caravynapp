@@ -102,7 +102,7 @@ struct RetrievePostService {
     
     func getUsersPosts(userId: String) async -> [Post] {
         do {
-            let posts: [Post] = try await SupabaseHandler.client.from("posts").select("*").eq("user_id", value: userId).order("created_at", ascending: true).execute().value
+            let posts: [Post] = try await SupabaseHandler.client.from("posts").select("*").eq("user_id", value: userId).order("created_at", ascending: false).execute().value
             return posts
         } catch {
             return []
@@ -118,7 +118,7 @@ struct RetrievePostService {
                 query = query.lt("created_at", value: cursor)
             }
             
-            let fetched: [Post] = try await query.order("created_at", ascending: false).limit(limit).execute().value
+            let fetched: [Post] = try await query.order("created_at", ascending: true).limit(limit).execute().value
             
             return fetched
         } catch {

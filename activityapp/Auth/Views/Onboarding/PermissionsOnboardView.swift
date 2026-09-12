@@ -12,7 +12,7 @@ struct PermissionsOnboardView: View {
     @EnvironmentObject var authStore: AuthStore
     @EnvironmentObject var locationHandler: LocationHandler
     
-    @State var showWelcomeOnboardView: Bool = false
+    @State var showWelcomeOnboardView: Bool = true
 
     @State var notificationsEnabled = false
     @State var locationEnabled = false
@@ -22,7 +22,7 @@ struct PermissionsOnboardView: View {
 
     var body: some View {
         if(showWelcomeOnboardView){
-            //WelcomeOnboardView(showWelcomeOnboardView: $showWelcomeOnboardView)
+            WelcomeOnboardView(showWelcomeOnboardView: $showWelcomeOnboardView)
         } else {
             VStack(spacing: 24) {
                 Spacer()

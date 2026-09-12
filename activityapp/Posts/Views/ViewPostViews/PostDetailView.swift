@@ -35,7 +35,10 @@ struct PostDetailView: View {
     var body: some View {
         ScrollView{
             VStack{
-                MediaElement(post: $post)
+                if let id = userId{
+                    MediaElement(post: $post, userId: id)
+                }
+                
                 Text(post.caption)
                     .padding(.bottom, 20)
                 
@@ -73,7 +76,7 @@ struct PostDetailView: View {
                     TextField("Add a comment", text: $newComment)
                     Button(action:{
                         Task{
-                            guard let userId = await authStore.user?.id else {
+                            guard let userId = authStore.user?.id else {
                                 return
                             }
                             commentLoading = true
