@@ -19,8 +19,29 @@ struct OtherUserView: View {
     var dateFormatterService = DateFormatterService()
     
     @State var userPosts: [Post] = []
+    @State var extraPosts: [Post] = []
     
     @State var user: AppUser
+    
+    var tripService = TripService()
+    @State var trips: [Trip] = []
+    
+    private func postsInTrip(_ trip: Trip) -> [Post] {
+        let start = trip.created_at
+        let end = trip.ended_at ?? "9999-12-31T23:59:59+00:00"
+
+        return postStore.userPosts.filter {
+            $0.created_at >= start && $0.created_at <= end
+        }
+    }
+    
+    private func postsNotInAnyTrip() -> [Post] {
+        let allTripPosts = Set(
+            trips.flatMap { postsInTrip($0) }.map { $0.id }
+        )
+
+        return postStore.userPosts.filter { !allTripPosts.contains($0.id) }
+    }
     
     var body: some View {
         NavigationStack{
@@ -63,8 +84,14 @@ struct OtherUserView: View {
                     }
                 }
                 
-                
-                PostListElement(posts: $userPosts)
+                TripListElement(level: 1, trips: trips)
+                HStack{
+                    Text("Posts not in trip").font(.title3)
+                    Spacer()
+                }
+                .padding(.top, 10)
+                .padding(.bottom, 10)
+                PostListElement(posts: $extraPosts, trip: nil)
             
 
             }
@@ -72,21 +99,23 @@ struct OtherUserView: View {
         }
         
         .refreshable {
-            //reload posts
-            Task {
-                let userId = user.id
-                userPosts = await retrievePostService.getUsersPosts(userId: userId)
-            }
+
+            await postStore.loadUserPosts(userId: user.id)
+            if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
+                        trips = fetchedTrips
+                    }
+            
+            extraPosts = postsNotInAnyTrip()
             
         }
-        .onAppear{
-            //load posts
-            Task{
-                let userId = user.id
-                userPosts = await retrievePostService.getUsersPosts(userId: userId)
-            }
+        .task {
+
+            await postStore.loadUserPosts(userId: user.id)
+            if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
+                        trips = fetchedTrips
+                    }
             
-            
+            extraPosts = postsNotInAnyTrip()
         }
     }
 }

@@ -7,7 +7,7 @@
 import Foundation
 import CoreLocation
 
-struct Post: Codable, Identifiable, Equatable {
+struct Post: Codable, Identifiable, Equatable, Hashable {
     var id: String
     var user_id: String
     var group_id: String

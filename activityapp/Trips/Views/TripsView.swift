@@ -42,7 +42,9 @@ struct TripsView: View {
                                         guard let user = authStore.user else {
                                             return
                                         }
-                                        trips = await tripService.getUsersTrips(userId: user.id)
+                                        if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
+                                                    trips = fetchedTrips
+                                                }
                                     }
                                     
                                 }
@@ -60,7 +62,9 @@ struct TripsView: View {
             guard let user = authStore.user else {
                 return
             }
-            trips = await tripService.getUsersTrips(userId: user.id)
+            if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
+                        trips = fetchedTrips
+                    }
         }
         .sheet(item: $tripToShow) { trip in
             EditTripView(trip: trip, ended: trip.ended_at == nil ? true : false)
@@ -69,7 +73,9 @@ struct TripsView: View {
             guard let user = authStore.user else {
                 return
             }
-            trips = await tripService.getUsersTrips(userId: user.id)
+            if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
+                        trips = fetchedTrips
+                    }
         }
         
     }
