@@ -1,42 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleURLName</key>
-            <string>com.caravyn</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>caravyn</string>
-            </array>
-        </dict>
-    </array>
-
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-        <key>NSAllowsLocalNetworking</key>
-        <true/>
-    </dict>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>caravyn uses your photo library to share photos and their location</string>
-    <key>NSCameraUsageDescription</key>
-    <string>caravyn needs camera access to let you take photos and videos for your posts</string>
-
-    <key>NSMicrophoneUsageDescription</key>
-    <string>caravyn needs microphone access to record audio with your videos</string>
-
-
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>remote-notification</string>
-    </array>
-    
-
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.caravyn</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>caravyn</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

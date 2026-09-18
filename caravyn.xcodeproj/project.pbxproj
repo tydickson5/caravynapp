@@ -470,10 +470,11 @@
 				INFOPLIST_FILE = activityapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Caravyn;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
-				INFOPLIST_KEY_NSCameraUsageDescription = "We use your camera to create posts.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "caravyn needs camera access to let you take photos and videos for your posts";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This app needs local network access to connect to the development server.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Attach your location to posts.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "activityapp uses your microphone to record audio with videos";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "caravyn needs microphone access to record audio with your videos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "caravyn uses your photo library to share photos and their location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -484,7 +485,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.2;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.caravyn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -513,10 +514,11 @@
 				INFOPLIST_FILE = activityapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Caravyn;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
-				INFOPLIST_KEY_NSCameraUsageDescription = "We use your camera to create posts.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "caravyn needs camera access to let you take photos and videos for your posts";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This app needs local network access to connect to the development server.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Attach your location to posts.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "activityapp uses your microphone to record audio with videos";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "caravyn needs microphone access to record audio with your videos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "caravyn uses your photo library to share photos and their location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -527,7 +529,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.2;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.caravyn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
