@@ -70,6 +70,12 @@ struct AccountSettingsView: View {
                         NavigationLink("Share App", destination: ShareAppView())
                     }
                 }
+                if let userId = authStore.user?.id {
+                    Section("Make Suggestion"){
+                        AppSuggestionElement(userId: userId)
+                    }
+                }
+                
                 Section("Account"){
                     
                     Button(action:{
