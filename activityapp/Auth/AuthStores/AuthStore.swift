@@ -142,4 +142,28 @@ class AuthStore: ObservableObject {
     func updateUsername(newUsername: String) {
         user?.username = newUsername
     }
+    
+    func deleteAccount() async {
+        guard let userId = user?.id else {return}
+        do {
+            let body: [String: Any] = [
+                "userId": userId
+            ]
+            
+            guard let request = try await backendService.loadHttpRequest(path: "user/delete", body: body) else {
+                ToastManager.shared.error("Error deleting account")
+                return
+            }
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                throw NSError(domain: "deleteAccount", code: (response as? HTTPURLResponse)?.statusCode ?? -1)
+            }
+            
+            logOut()
+        } catch {
+            
+        }
+    }
 }

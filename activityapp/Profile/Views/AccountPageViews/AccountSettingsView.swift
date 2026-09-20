@@ -15,6 +15,7 @@ struct AccountSettingsView: View {
     @State var newUsername: String = ""
     
     @State var showAlert = false
+    @State var showDeleteAlert = false
     
     var body: some View{
         
@@ -78,6 +79,7 @@ struct AccountSettingsView: View {
                 
                 Section("Account"){
                     
+                    //logout
                     Button(action:{
                         showAlert.toggle()
                     }){
@@ -94,6 +96,27 @@ struct AccountSettingsView: View {
                         Alert(title: Text("Log out"), message: Text("Are you sure you want to log out?"), primaryButton: .destructive(Text("Log out")){
                             Task{
                                 authStore.logOut()
+                            }
+                        }, secondaryButton: .cancel())
+                    }
+                    
+                    //delete account
+                    Button(action:{
+                        showDeleteAlert.toggle()
+                    }){
+                        HStack{
+                            Text("Delete account")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                            
+                        }
+                        .tint(Color.red)
+                    }
+                    .alert(isPresented: $showDeleteAlert){
+                        Alert(title: Text("Delete"), message: Text("Are you sure you want to delete your account? This is irreversible and will delete all information associated with this account."), primaryButton: .destructive(Text("Log out")){
+                            Task{
+                                
+                                await authStore.deleteAccount()
                             }
                         }, secondaryButton: .cancel())
                     }
