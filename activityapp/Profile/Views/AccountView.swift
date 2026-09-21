@@ -61,34 +61,11 @@ struct AccountView: View {
                     .padding(.top, 10)
                     .padding(.bottom, 10)
                     if(!pendingStore.pendingPosts.isEmpty){
-                        ForEach(pendingStore.pendingPosts){ result in
-                            HStack{
-                                if let image = pendingStore.previewImage(for: result) {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 65, height: 100)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                } else {
-                                    // fallback placeholder, e.g.:
-                                    Image(systemName: "photo")
-                                        .foregroundStyle(.secondary)
-                                        .frame(width: 65, height: 100)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                }
-                                Spacer()
-                                Button(action:{
-                                    pendingStore.remove(result)
-                                }){
-                                    Image(systemName: "trash.fill")
-                                        .foregroundStyle(Color.red)
-                                }
-                                .buttonStyle(.borderless)
-                            }
-                            
-                            
+                        HStack {
+                            Text("\(pendingStore.pendingPosts.count) uploading posts")
                         }
-                        
+                        .padding(.top, 20)
+                        .padding(.bottom, 20)
                     }
                     TripListElement(level: 1, trips: trips)
                     HStack{

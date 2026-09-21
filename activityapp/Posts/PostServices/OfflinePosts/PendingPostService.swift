@@ -59,6 +59,8 @@ final class PendingPostService: ObservableObject {
         var posts = loadIndex()
         posts.append(post)
         saveIndex(posts)
+        
+        ToastManager.shared.success("Posting")
         return post
     }
     
@@ -86,6 +88,8 @@ final class PendingPostService: ObservableObject {
         var posts = loadIndex()
         posts.append(post)
         saveIndex(posts)
+        
+        ToastManager.shared.success("Posting")
         return post
     }
     
