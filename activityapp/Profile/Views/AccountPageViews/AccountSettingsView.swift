@@ -113,7 +113,7 @@ struct AccountSettingsView: View {
                         .tint(Color.red)
                     }
                     .alert(isPresented: $showDeleteAlert){
-                        Alert(title: Text("Delete"), message: Text("Are you sure you want to delete your account? This is irreversible and will delete all information associated with this account."), primaryButton: .destructive(Text("Log out")){
+                        Alert(title: Text("Delete"), message: Text("Are you sure you want to delete your account? This is irreversible and will delete all information associated with this account."), primaryButton: .destructive(Text("Delete")){
                             Task{
                                 
                                 await authStore.deleteAccount()

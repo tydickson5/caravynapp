@@ -150,12 +150,12 @@ class AuthStore: ObservableObject {
                 "userId": userId
             ]
             
-            guard let request = try await backendService.loadHttpRequest(path: "user/delete", body: body) else {
+            guard let request = try await backendService.loadHttpRequest(path: "users/delete", body: body) else {
                 ToastManager.shared.error("Error deleting account")
                 return
             }
             
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await URLSession.shared.data(for: request)
             
             guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
                 throw NSError(domain: "deleteAccount", code: (response as? HTTPURLResponse)?.statusCode ?? -1)
