@@ -64,11 +64,19 @@ struct PostDetailView: View {
                 .padding(.bottom, 10)
                 
                 
-                //like
+                //like and report
                 HStack{
                     Text(dateFormatterService.formattedDate(post.created_at))
                     Spacer()
                     LikeElement(post: $post)
+                    if let userId = authStore.user?.id {
+                        NavigationLink{
+                            ReportView(userId: userId, postId: post.id, type: "post")
+                        } label: {
+                            Image(systemName: "exclamationmark.circle")
+                        }
+                    }
+                    
                 }
                 
                 //comment text field
@@ -106,6 +114,14 @@ struct PostDetailView: View {
                         HStack{
                             Text(comment.comment)
                             Spacer()
+                            if let userId = authStore.user?.id {
+                                NavigationLink {
+                                    ReportView(userId: userId, commentId: comment.id, type: "comment")
+                                } label: {
+                                    Image(systemName: "exclamationmark.circle")
+                                }
+                            }
+                            
                             if(comment.user_id == userId){
                                 Button(action:{
                                     Task{

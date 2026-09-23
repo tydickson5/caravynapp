@@ -14,7 +14,7 @@ enum SupabaseHandler
     ///Limit Number of Users
     static let maxNumberOfUsers = 100
     
-    static let ipAddress: String =  "192.168.68.60"
+    static let ipAddress: String =  "192.168.1.178"
     
     static let localBackendURL: String = "http://\(ipAddress):3000"
     
