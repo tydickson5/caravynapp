@@ -15,6 +15,7 @@ struct RetrievePostService {
             let fetched: [Post] = try await SupabaseHandler.client
                 .from("posts")
                 .select()
+                .eq("state", value: "public")
                 .order("created_at", ascending: false)
                 .execute()
                 .value
