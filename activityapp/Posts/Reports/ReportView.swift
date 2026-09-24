@@ -152,6 +152,6 @@ struct ReportView: View {
             .disabled(isLoading)
         }
         .padding()
-        
+        .background(Color.background)
     }
 }

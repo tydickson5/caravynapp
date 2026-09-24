@@ -17,22 +17,25 @@ struct SignUpView: View{
     @EnvironmentObject var authHandler: AuthHandler
     
     var body: some View {
-        
-        VStack(){
-            Text("Create Account")
-                .tint(Color.dark)
-                .font(.largeTitle)
-            
-            EmailTextField(email: $email)
+        ZStack{
+            Color.background
+                            .ignoresSafeArea()
+            VStack(){
+                Text("Create Account")
+                    .tint(Color.dark)
+                    .font(.largeTitle)
+                
+                EmailTextField(email: $email)
 
-            PasswordCheck(password: $password, confirmPassword: $confirmPassword, valid: $valid)
+                PasswordCheck(password: $password, confirmPassword: $confirmPassword, valid: $valid)
 
-            SubmitSignInButton(typeLogin: false, email: $email, password: $password, valid: $valid)
-            
-            
+                SubmitSignInButton(typeLogin: false, email: $email, password: $password, valid: $valid)
+                
+                
+            }
+            .padding()
         }
-        .padding()
-
+        
         
     }
         

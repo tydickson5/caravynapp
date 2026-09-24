@@ -45,6 +45,7 @@ struct ShareAppView: View{
 
         }
         .padding()
+        .background(Color.background)
         
     }
 }

@@ -83,6 +83,7 @@ struct AccountView: View {
                 
             }
             .padding()
+            .background(Color.background)
 
         }
         
@@ -109,6 +110,7 @@ struct AccountView: View {
             
             extraPosts = postsNotInAnyTrip()
         }
+        
     }
     
 }

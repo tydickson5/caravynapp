@@ -156,6 +156,7 @@ struct PostDetailView: View {
             
             
         }
+        .background(Color.background)
         .scrollDismissesKeyboard(.interactively)
 
         .task {

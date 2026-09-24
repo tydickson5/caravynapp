@@ -14,26 +14,31 @@ struct ForgotPasswordView: View {
     @State private var email = ""
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text("Reset Password")
-                .font(.title)
-            TextField("Email", text: $email)
-                .textFieldStyle(.roundedBorder)
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-            Button("Send Reset Email") {
-                Task {
-                    do {
-                        try await authService.sendPasswordReset(email: email)
-                        dismiss()
-                    } catch {
-                        ToastManager.shared.error("Error")
+        ZStack{
+            Color.background
+                            .ignoresSafeArea()
+            VStack(spacing: 16) {
+                Text("Reset Password")
+                    .font(.title)
+                TextField("Email", text: $email)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.emailAddress)
+                    .autocapitalization(.none)
+                Button("Send Reset Email") {
+                    Task {
+                        do {
+                            try await authService.sendPasswordReset(email: email)
+                            dismiss()
+                        } catch {
+                            ToastManager.shared.error("Error")
+                        }
+                        
                     }
-                    
                 }
+                .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.borderedProminent)
+            .padding()
         }
-        .padding()
+        
     }
 }

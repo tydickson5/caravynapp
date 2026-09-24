@@ -44,6 +44,8 @@ struct SearchFriendsView: View {
             }
             .navigationTitle("Find Friends")
             .searchable(text: $searchText)
+            .scrollContentBackground(.hidden)
+            .background(Color.background)
             .onChange(of: searchText) { _, newValue in
                 
                 searchTask?.cancel()

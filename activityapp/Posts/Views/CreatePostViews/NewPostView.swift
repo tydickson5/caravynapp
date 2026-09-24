@@ -51,6 +51,7 @@ struct NewPostView: View {
             }
         }
         .padding()
+        .background(Color.background)
         .sheet(isPresented: $showCamera) {
             NewCameraView { result in
                 capturedMedia = result

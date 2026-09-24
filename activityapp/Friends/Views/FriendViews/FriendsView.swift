@@ -50,7 +50,8 @@ struct FriendsView: View {
                         }
                     }
                 }
-                
+                .scrollContentBackground(.hidden)
+                .background(Color.background)
                 
                 
             }

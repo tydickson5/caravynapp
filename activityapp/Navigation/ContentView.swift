@@ -57,6 +57,7 @@ struct ContentView: View {
             if userLimitCalculator.isLoading {
                 Text("Loading...")
                     .padding(.bottom, 5)
+                
             } else {
                 if userLimitCalculator.numberOfUsers > SupabaseHandler.maxNumberOfUsers {
                     UserLimitView()

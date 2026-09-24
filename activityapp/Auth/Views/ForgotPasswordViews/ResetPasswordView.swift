@@ -13,25 +13,30 @@ struct ResetPasswordView: View {
     @Binding var isPresented: Bool
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text("New Password")
-                .font(.title)
-            SecureField("New password", text: $newPassword)
-                .textFieldStyle(.roundedBorder)
-            SecureField("Confirm password", text: $confirm)
-                .textFieldStyle(.roundedBorder)
-            Button("Update Password") {
-                guard newPassword == confirm else {
-                    ToastManager.shared.error("Passwords don't match")
-                    return
+        ZStack{
+            Color.background
+                            .ignoresSafeArea()
+            VStack(spacing: 16) {
+                Text("New Password")
+                    .font(.title)
+                SecureField("New password", text: $newPassword)
+                    .textFieldStyle(.roundedBorder)
+                SecureField("Confirm password", text: $confirm)
+                    .textFieldStyle(.roundedBorder)
+                Button("Update Password") {
+                    guard newPassword == confirm else {
+                        ToastManager.shared.error("Passwords don't match")
+                        return
+                    }
+                    Task {
+                        await authHandler.updatePassword(newPassword: newPassword)
+                        isPresented = false
+                    }
                 }
-                Task {
-                    await authHandler.updatePassword(newPassword: newPassword)
-                    isPresented = false
-                }
+                .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.borderedProminent)
+            .padding()
         }
-        .padding()
+        
     }
 }

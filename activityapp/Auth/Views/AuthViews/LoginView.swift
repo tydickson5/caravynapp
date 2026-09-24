@@ -19,6 +19,7 @@ struct LoginView: View{
     var body: some View {
         NavigationStack{
             ZStack{
+                Color.background.ignoresSafeArea()
                 VStack(){
                     Text("Login")
                         .tint(Color.dark)
@@ -55,11 +56,13 @@ struct LoginView: View{
                     
                     
                 }
+                .padding()
                 
+
             }
-            
+            .background(Color.background)
         }
-        .padding()
+        
         
     }
 }

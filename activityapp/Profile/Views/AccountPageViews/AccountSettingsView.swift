@@ -67,9 +67,11 @@ struct AccountSettingsView: View {
                     DefaultView()
                 }
                 Section("Share app"){
-                    HStack{
-                        NavigationLink("Share App", destination: ShareAppView())
+                    ShareLink(item: "Join Caravyn Beta Testing! https://testflight.apple.com/join/PxBqJVAG"){
+                        Label("Share App", systemImage: "square.and.arrow.up")
+                            .foregroundStyle(Color.lightBlue)
                     }
+                    .tint(Color.lightBlue)
                 }
                 if let userId = authStore.user?.id {
                     Section("Make Suggestion"){
@@ -122,6 +124,9 @@ struct AccountSettingsView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.background)
         }
+        .background(Color.background)
     }
 }

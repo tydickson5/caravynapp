@@ -96,6 +96,7 @@ struct OtherUserView: View {
 
             }
             .padding()
+            .background(Color.background)
         }
         
         .refreshable {
