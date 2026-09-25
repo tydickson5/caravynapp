@@ -14,14 +14,14 @@ enum SupabaseHandler
     ///Limit Number of Users
     static let maxNumberOfUsers = 100
     
-    static let ipAddress: String =  "172.25.169.82"
+    static let ipAddress: String =  "172.25.118.245"
     
     static let localBackendURL: String = "http://\(ipAddress):3000"
     
     static let productionBackendURL: String = "https://activityapp-backend.fly.dev"
     
     //dev prod
-    #if true
+    #if false
         #if DEBUG
         static let backendURL = localBackendURL
         static let supabaseURL = "https://coeythfyfwzrwzuqowfe.supabase.co"

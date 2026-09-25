@@ -55,8 +55,9 @@ struct ContentView: View {
         
         ZStack{
             if userLimitCalculator.isLoading {
-                Text("Loading...")
+                Text("Welcome to Caravyn")
                     .padding(.bottom, 5)
+                    .foregroundStyle(Color.dark)
                 
             } else {
                 if userLimitCalculator.numberOfUsers > SupabaseHandler.maxNumberOfUsers {
@@ -148,17 +149,10 @@ struct ContentView: View {
                     }
                     else{
                         if(authStore.isLoading){
-                            Text("Loading...")
+                            Text("Welcome to Caravyn")
                                 .padding(.bottom, 5)
-                            Button(action:{
-                                authStore.logOut()
-                            }){
-                                HStack{
-                                    Image(systemName: "arrow.left")
-                                    Text("Back to Login")
-                                }
-                                .tint(Color.dark)
-                            }
+                                .foregroundStyle(Color.dark)
+
                         }
                         else{
                             LoginView()
