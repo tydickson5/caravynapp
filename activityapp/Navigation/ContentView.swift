@@ -164,8 +164,7 @@ struct ContentView: View {
         .task{
             await userLimitCalculator.getNumberOfAppUsers()
         }
-        
-        
+        .font(.body)
         
          
     }

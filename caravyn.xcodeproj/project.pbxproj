@@ -43,7 +43,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D55CD193303869D500AA43B3 /* Exceptions for "activityapp" folder in "activityapp" target */ = {
+		D5409F92306C9AC6003595D4 /* Exceptions for "activityapp" folder in "activityapp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -56,7 +56,7 @@
 		D5EE5C002FAAC8FC00D49FCF /* activityapp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D55CD193303869D500AA43B3 /* Exceptions for "activityapp" folder in "activityapp" target */,
+				D5409F92306C9AC6003595D4 /* Exceptions for "activityapp" folder in "activityapp" target */,
 			);
 			path = activityapp;
 			sourceTree = "<group>";

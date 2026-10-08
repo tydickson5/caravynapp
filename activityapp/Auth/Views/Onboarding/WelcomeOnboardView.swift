@@ -22,7 +22,6 @@ struct WelcomeOnboardView: View {
 
                 VStack(alignment: .leading, spacing: 50) {
                     Text("Caravyn")
-                        .font(.system(size: 50))
                         .bold()
                         .foregroundStyle(.dark)
                         .padding(.top, 80)

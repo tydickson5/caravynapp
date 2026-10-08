@@ -28,7 +28,7 @@ struct TripListElement: View {
         ForEach(trips) { trip in
             let tripPosts = postsInTrip(trip)
             NavigationLink(destination: TripDetailView(trip: trip, posts: tripPosts)) {
-                TripSummaryCard(trip: trip, posts: tripPosts)
+                TripCard(trip: trip, posts: tripPosts)
             }
         }
         

@@ -18,9 +18,22 @@ struct TripDetailView: View {
     
     var body: some View {
         ScrollView {
-            Text(trip.name)
+            VStack(alignment: .leading, spacing: 10) {
+                Text(trip.name).font(.title2)
+                HStack{
+                    Spacer()
+                    TripDatesElement(startDate: trip.created_at, endDate: trip.ended_at ?? "Now")
+                }
+                Text(trip.description)
+                TripMapElement(posts: posts)
+            }
+            
+            .padding(.bottom, 30)
             PostListElement(posts: $postStore.userPosts, trip: trip)
         }
+        .padding(.top, 100)
         .padding()
+        .background(Color.background)
+        .ignoresSafeArea()
     }
 }
