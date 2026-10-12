@@ -25,6 +25,7 @@ struct PostDetailView: View {
     
     @EnvironmentObject var postStore: PostStore
     @EnvironmentObject var authStore: AuthStore
+    var retrievePostService = RetrievePostService()
     var likeService = LikeService()
     var userService = UserService()
     
@@ -60,6 +61,8 @@ struct PostDetailView: View {
                         }
                     }
                     Spacer()
+                    ShareButton(post: post)
+                    
                 }
                 .padding(.bottom, 10)
                 

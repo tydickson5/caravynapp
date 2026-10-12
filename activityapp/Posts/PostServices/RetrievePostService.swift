@@ -6,6 +6,7 @@
 //
 import Supabase
 import Foundation
+import UIKit
 
 struct RetrievePostService {
     
@@ -69,6 +70,20 @@ struct RetrievePostService {
                 .getPublicURL(path: cleanPath)
         } catch {
             print("image url error:", error)
+            return nil
+        }
+    }
+    
+    func getUIImage(path: String) async -> UIImage? {
+        guard let url = imageURL(path: path) else {
+            return nil
+        }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return UIImage(data: data)
+        } catch {
+            print("Image download error:", error)
             return nil
         }
     }
