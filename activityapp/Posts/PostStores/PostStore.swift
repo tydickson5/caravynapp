@@ -65,7 +65,7 @@ class PostStore: ObservableObject {
         }
     }
     
-    func createPost(isImagePost: Bool, postId: String, imageURL: UIImage?, videoURL: URL?, userId: String, groupId: String, caption: String, latitude: Double, longitude: Double, state: String, created_at: String?) async {
+    func createPost(isImagePost: Bool, postId: String, imageURL: UIImage?, videoURL: URL?, userId: String, groupId: String, caption: String, latitude: Double, longitude: Double, state: String, created_at: String?) async -> Bool {
         isLoading = true
         defer {
             isLoading = false
@@ -79,15 +79,16 @@ class PostStore: ObservableObject {
                     publicPosts.append(newPost)
                 }
                 userPosts.append(newPost)
+                return true
             } else {
                 ToastManager.shared.error("Error creating post")
-                return
+                return false
             }
             
         } catch {
             print(error)
             ToastManager.shared.error("Error creating post")
-            return
+            return false
         }
     }
     

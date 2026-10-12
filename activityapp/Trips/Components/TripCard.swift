@@ -21,37 +21,37 @@ struct TripCard: View {
     
     var body: some View {
 
-            ZStack(alignment: .topLeading) {
-                if let post = topPost.first {
-                    if let media = post.media_url, !media.isEmpty,
-                       let url = retrievePostService.imageURL(path: media) {
-                        LazyImage(url: url) { state in
-                            if let image = state.image {
-                                image.resizable()
-                                    .scaledToFill()
-                            } else {
-                                Color.gray.opacity(0.2)
-                            }
+        ZStack(alignment: .topLeading) {
+            if let post = topPost.first {
+                if let media = post.media_url, !media.isEmpty,
+                   let url = retrievePostService.imageURL(path: media) {
+                    LazyImage(url: url) { state in
+                        if let image = state.image {
+                            image.resizable()
+                                .scaledToFill()
+                        } else {
+                            Color.gray.opacity(0.2)
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 200)
-                        .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 200)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(trip.name)
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                    TripDatesElement(startDate: trip.created_at, endDate: trip.ended_at)
-                }
-                .padding(10)
-                .background(Color.black.opacity(0.8))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .padding(12)
             }
-            .frame(height: 200)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(trip.name)
+                    .font(.title2)
+                    .foregroundStyle(.white)
+                TripDatesElement(startDate: trip.created_at, endDate: trip.ended_at)
+            }
+            .padding(10)
+            .background(Color.black.opacity(0.8))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .padding(12)
         }
+        .frame(height: 200)
+    }
     
 }

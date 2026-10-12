@@ -70,11 +70,13 @@ final class PostUploadQueue {
         guard await inFlightTracker.claim(post.id) else { return }
         
         let mediaURL = PendingPostService.shared.fileURL(for: post.media_url!)
+        
+        var result: Bool
 
         switch post.media_type {
         case "image":
             guard let image = UIImage(contentsOfFile: mediaURL.path) else { return }
-            await postStore.createPost(isImagePost: true, postId: post.id,
+            result = await postStore.createPost(isImagePost: true, postId: post.id,
                                            imageURL: image, videoURL: nil, userId: post.user_id, groupId: post.group_id,
                 caption: post.caption, latitude: post.latitude!, longitude: post.longitude!,
                                            state: post.public_post ? "public" : "friends", created_at: post.created_at ?? nil
@@ -83,17 +85,26 @@ final class PostUploadQueue {
             guard let thumbFilename = post.thumbnailFilename,
                   let thumbnail = UIImage(contentsOfFile: PendingPostService.shared.fileURL(for: thumbFilename).path)
             else { return }
-            await postStore.createPost(isImagePost: false, postId: post.id, imageURL: nil,
+            result = await postStore.createPost(isImagePost: false, postId: post.id, imageURL: nil,
                 videoURL: mediaURL, userId: post.user_id,
                 groupId: post.group_id, caption: post.caption, latitude: post.latitude!,
                                                   longitude: post.longitude!, state: post.public_post ? "public" : "friends", created_at: post.created_at ?? nil
             )
+            
+            
         default:
+            PendingPostService.shared.remove(post)
             return
         }
         
         // Success — remove from the durable queue
-        PendingPostService.shared.remove(post)
+        
+        
+        if(result){
+            PendingPostService.shared.remove(post)
+        } else {
+            PendingPostService.shared.incrementAttempts(post)
+        }
             
     }
 }
