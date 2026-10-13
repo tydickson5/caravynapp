@@ -19,3 +19,20 @@ struct ShareableVideo: Transferable {
         }
     }
 }
+
+struct ShareableImage: Transferable {
+    let image: UIImage
+
+    static var transferRepresentation: some TransferRepresentation {
+        DataRepresentation(exportedContentType: .jpeg) { image in
+            guard let data = image.image.jpegData(compressionQuality: 1) else {
+                throw ImageShareError.conversionFailed
+            }
+            return data
+        }
+    }
+}
+
+enum ImageShareError: Error {
+    case conversionFailed
+}

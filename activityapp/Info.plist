@@ -2,13 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>font</key>
-	<string></string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Fonts/EBGaramond.tts</string>
-		<string>Fonts/EBGaramond-Italic.tts</string>
-	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -16,9 +9,16 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fonts/EBGaramond.tts</string>
+		<string>Fonts/EBGaramond-Italic.tts</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>font</key>
+	<string></string>
 </dict>
 </plist>

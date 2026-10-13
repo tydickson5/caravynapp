@@ -44,7 +44,7 @@ struct ShareButton: View {
             } else {
                 if let thumbnail {
                     ShareLink(
-                        item: Image(uiImage: thumbnail),
+                        item: ShareableImage(image: thumbnail),
                         preview: SharePreview(
                             "Caravyn Photo",
                             image: Image(uiImage: thumbnail)
@@ -53,8 +53,7 @@ struct ShareButton: View {
                         shareLabel
                     }
                 } else {
-                    shareLabel
-                        .foregroundStyle(.secondary)
+                    ProgressView()
                 }
             }
         }
