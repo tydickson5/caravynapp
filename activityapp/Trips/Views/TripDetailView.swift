@@ -11,7 +11,7 @@ struct TripDetailView: View {
     
     @EnvironmentObject var authStore: AuthStore
     @EnvironmentObject var postStore: PostStore
-    var retrievePostServie = TripService()
+    var tripService = TripService()
     
     var trip: Trip
     @State var posts: [Post]
@@ -29,11 +29,23 @@ struct TripDetailView: View {
             }
             
             .padding(.bottom, 30)
-            PostListElement(posts: $postStore.userPosts, trip: trip)
+            PostListElement(posts: $posts, trip: trip)
         }
         .padding(.top, 100)
         .padding()
         .background(Color.background)
         .ignoresSafeArea()
+        .task{
+            //load trips for all users
+            let otherMemberPosts = await tripService.getOtherUsersPostsInTrip(tripId: trip.id)
+            
+            posts = otherMemberPosts
+        }
+        .refreshable {
+            //load trips for all users
+            let otherMemberPosts = await tripService.getOtherUsersPostsInTrip(tripId: trip.id)
+            
+            posts = otherMemberPosts
+        }
     }
 }

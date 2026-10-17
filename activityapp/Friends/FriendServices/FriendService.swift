@@ -94,4 +94,22 @@ struct FriendService {
         }
         return false
     }
+    
+    func getUsersFromFriends(friends: [Friend]) async  -> [AppUser] {
+        
+        do {
+            let friendIds = friends.map{ $0.friend_id }
+            
+            let fetchedUsers: [AppUser] = try await SupabaseHandler.client.from("profiles").select().in("id", values: friendIds).order("created_at", ascending: true)
+                .execute()
+                .value
+            
+            return fetchedUsers
+        } catch {
+            print(error)
+            return []
+        }
+        
+        
+    }
 }

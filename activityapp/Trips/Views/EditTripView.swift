@@ -90,6 +90,8 @@ struct EditTripView: View {
                         .fill(.dark)
                         .stroke(Color.dark.opacity(0.5), lineWidth: 2)
                 )
+                
+                AddUserToTripElement(trip: trip)
             }
             .navigationTitle("Edit Trip")
             .navigationBarTitleDisplayMode(.inline)

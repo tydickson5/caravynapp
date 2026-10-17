@@ -13,3 +13,10 @@ struct Trip: Decodable, Identifiable {
     var created_at: String
     var ended_at: String?
 }
+
+struct UserTrip: Decodable, Identifiable {
+    var id: String
+    var user_id: String
+    var trip_id: String
+    var created_at: String
+}

@@ -101,7 +101,53 @@ struct TripService {
             ToastManager.shared.success("Updated")
             return true
         } catch {
-            ToastManager.shared.success("Error updating trip")
+            ToastManager.shared.error("Error updating trip")
+            return false
+        }
+    }
+    
+    func addUserToTrip(tripId: String, userId: String, backendService: BackendService) async -> Bool {
+        let body: [String: Any] = [
+            "tripId": tripId,
+            "userId": userId
+        ]
+        
+        do {
+            guard let request = try await backendService.loadHttpRequest(path: "trips/addUser", body: body) else {
+                ToastManager.shared.error("Error adding user")
+                return false
+            }
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            ToastManager.shared.success("Added")
+            return true
+            
+        } catch {
+            ToastManager.shared.error("Error adding user")
+            return false
+        }
+    }
+    
+    func removeUserFromTrip(tripId: String, userId: String, backendService: BackendService) async -> Bool {
+        let body: [String: Any] = [
+            "tripId": tripId,
+            "userId": userId
+        ]
+        
+        do {
+            guard let request = try await backendService.loadHttpRequest(path: "trips/removeUser", body: body) else {
+                ToastManager.shared.error("Error leaving trip")
+                return false
+            }
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            ToastManager.shared.success("You have left")
+            return true
+            
+        } catch {
+            ToastManager.shared.error("Error leaving trip")
             return false
         }
     }
@@ -118,13 +164,81 @@ struct TripService {
     }
     
     func getUsersTrips(userId: String) async -> [Trip]? {
-        
         do {
-            let fetched: [Trip] = try await SupabaseHandler.client.from("trips").select().eq("user_id", value: userId).order("created_at", ascending: true).execute().value
+            let userTrips = await getUserTrips(userId: userId)
+
+            guard let userTrips, !userTrips.isEmpty else {
+                return []
+            }
+
+            let tripIds = userTrips.map { $0.trip_id }
+
+            let fetched: [Trip] = try await SupabaseHandler.client
+                .from("trips")
+                .select()
+                .in("id", values: tripIds)
+                .order("created_at", ascending: true)
+                .execute()
+                .value
+
+            return fetched
+        } catch {
+            print("Error fetching user trips:", error)
+            return nil
+        }
+    }
+    
+    func getUserTrips(userId: String) async -> [UserTrip]? {
+        do {
+            let fetched: [UserTrip] = try await SupabaseHandler.client.from("trip_friend").select().eq("user_id", value: userId).order("created_at", ascending: true).execute().value
             return fetched
         } catch {
             print(error)
             return nil
+        }
+    }
+    
+    func getUsersInTrip(tripId: String) async -> [AppUser] {
+        do {
+            let fetchedUserTrips: [UserTrip] = try await SupabaseHandler.client.from("trip_friend").select().eq("trip_id", value: tripId).order("created_at", ascending: true).execute().value
+            
+            guard !fetchedUserTrips.isEmpty else {
+                return []
+            }
+
+            let userIds = fetchedUserTrips.map { $0.user_id }
+            
+            let fetchedUsers: [AppUser] = try await SupabaseHandler.client.from("profiles").select().in("id", values: userIds).order("created_at", ascending: true)
+                .execute()
+                .value
+            
+            return fetchedUsers
+        } catch {
+            print(error)
+            return []
+        }
+    }
+    
+    func getOtherUsersPostsInTrip(tripId: String) async -> [Post] {
+        do {
+            let otherMembers = await getUsersInTrip(tripId: tripId)
+            
+            guard !otherMembers.isEmpty else {
+                return []
+            }
+
+            let userIds = otherMembers.map { $0.id }
+            print(userIds)
+            
+            let fetchedPosts: [Post] = try await SupabaseHandler.client.from("posts").select().in("user_id", values: userIds).order("created_at", ascending: true).execute().value
+            
+            print(fetchedPosts.count)
+            
+            return fetchedPosts
+            
+        } catch {
+            print(error)
+            return []
         }
     }
 }
