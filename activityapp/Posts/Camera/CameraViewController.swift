@@ -47,8 +47,14 @@ final class CameraViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        DispatchQueue.global(qos: .userInitiated).async{
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
             self.session.startRunning()
+            
+            // Apply zoom on the main queue once the hardware pipeline is active
+            DispatchQueue.main.async {
+                self.setDefaultZoom()
+            }
         }
     }
     
@@ -65,6 +71,23 @@ final class CameraViewController: UIViewController {
 }
 
 extension CameraViewController {
+    
+    func setDefaultZoom() {
+        guard let device = cameraDevice else { return }
+        
+        do {
+            try device.lockForConfiguration()
+            let targetZoom = min(
+                max(rawZoomFactorPerDisplayX, device.minAvailableVideoZoomFactor),
+                device.maxAvailableVideoZoomFactor
+            )
+            device.videoZoomFactor = targetZoom
+            device.unlockForConfiguration()
+            print("Default zoom locked to raw: \(targetZoom)")
+        } catch {
+            print("Failed to set default zoom: \(error)")
+        }
+    }
     
     func setupCamera() {
             
@@ -98,10 +121,8 @@ extension CameraViewController {
             } else {
                 rawZoomFactorPerDisplayX = 1.0
             }
-            
-            print("Using device: \(device.deviceType.rawValue)")
-            print("Switch-over factors: \(device.virtualDeviceSwitchOverVideoZoomFactors)")
-            print("Raw factor per display 1x: \(rawZoomFactorPerDisplayX)")
+
+
             
             do {
                 
@@ -476,11 +497,7 @@ extension CameraViewController {
 extension CameraViewController {
 
     @objc func flipCamera() {
-
-        currentPosition =
-            currentPosition == .back
-            ? .front
-            : .back
+        currentPosition = currentPosition == .back ? .front : .back
 
         session.beginConfiguration()
 
@@ -488,18 +505,27 @@ extension CameraViewController {
             session.removeInput($0)
         }
 
-        guard let device = AVCaptureDevice.default(
-            .builtInWideAngleCamera,
-            for: .video,
-            position: currentPosition
-        ) else {
-            session.commitConfiguration()
-            return
+        var selectedDevice: AVCaptureDevice?
+
+        if currentPosition == .back {
+            let deviceTypesInPriorityOrder: [AVCaptureDevice.DeviceType] = [
+                .builtInTripleCamera,
+                .builtInDualWideCamera,
+                .builtInDualCamera,
+                .builtInWideAngleCamera
+            ]
+            for type in deviceTypesInPriorityOrder {
+                if let device = AVCaptureDevice.default(type, for: .video, position: .back) {
+                    selectedDevice = device
+                    break
+                }
+            }
+        } else {
+            selectedDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         }
 
-        guard let input =
-            try? AVCaptureDeviceInput(device: device)
-        else {
+        guard let device = selectedDevice,
+              let input = try? AVCaptureDeviceInput(device: device) else {
             session.commitConfiguration()
             return
         }
@@ -509,6 +535,24 @@ extension CameraViewController {
         }
 
         cameraDevice = device
+
+        if currentPosition == .back, let firstSwitchOver = device.virtualDeviceSwitchOverVideoZoomFactors.first {
+            rawZoomFactorPerDisplayX = CGFloat(truncating: firstSwitchOver)
+        } else {
+            rawZoomFactorPerDisplayX = 1.0
+        }
+
+        do {
+            try device.lockForConfiguration()
+            let initialZoom = min(
+                max(rawZoomFactorPerDisplayX, device.minAvailableVideoZoomFactor),
+                device.maxAvailableVideoZoomFactor
+            )
+            device.videoZoomFactor = initialZoom
+            device.unlockForConfiguration()
+        } catch {
+            print("Failed to reset zoom on flip: \(error)")
+        }
 
         session.commitConfiguration()
     }

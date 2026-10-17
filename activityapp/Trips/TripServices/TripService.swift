@@ -96,7 +96,7 @@ struct TripService {
                 throw NSError(domain: "updateTrip", code: (response as? HTTPURLResponse)?.statusCode ?? -1)
             }
             
-            let newTrip = try JSONDecoder().decode(Trip.self, from: data)
+            _ = try JSONDecoder().decode(Trip.self, from: data)
             
             ToastManager.shared.success("Updated")
             return true
@@ -118,7 +118,6 @@ struct TripService {
                 return false
             }
             
-            let (data, response) = try await URLSession.shared.data(for: request)
             
             ToastManager.shared.success("Added")
             return true
@@ -140,8 +139,6 @@ struct TripService {
                 ToastManager.shared.error("Error leaving trip")
                 return false
             }
-            
-            let (data, response) = try await URLSession.shared.data(for: request)
             
             ToastManager.shared.success("You have left")
             return true
