@@ -14,6 +14,8 @@ class AppDelegate: NSObject,
 
     private(set) var deviceToken: String?
     var pendingPostId: String?
+    var pendingTripId: String?
+    var pendingFriendId: String?
     
     weak var authStore: AuthStore? {
         didSet {
@@ -119,13 +121,31 @@ class AppDelegate: NSObject,
         let userInfo = response.notification.request.content.userInfo
         print("Notification tapped:", userInfo)
 
-        if let postId = userInfo["post_id"] as? String {
-            pendingPostId = postId  // store it
-            NotificationCenter.default.post(
-                name: .notificationTapped,
-                object: nil,
-                userInfo: ["postId": postId]
-            )
+        if let idType = userInfo["id_type"] as? String,
+           let id = userInfo["post_id"] as? String {
+            var forwarded: [String: Any] = [:]
+
+                switch idType {
+                case "post":
+                    pendingPostId = id
+                    forwarded["postId"] = id
+                case "trip":
+                    pendingTripId = id
+                    forwarded["tripId"] = id
+                case "friend":
+                    pendingFriendId = id
+                    forwarded["friendId"] = id
+                default:
+                    print("Unknown id_type:", idType)
+                }
+
+                if !forwarded.isEmpty {
+                    NotificationCenter.default.post(
+                        name: .notificationTapped,
+                        object: nil,
+                        userInfo: forwarded
+                    )
+            }
         }
 
         completionHandler()

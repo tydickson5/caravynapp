@@ -11,4 +11,6 @@ internal import Combine
 @MainActor
 class NavigationHandler: ObservableObject {
     @Published var selectedPost: Post?
+    @Published var selectedTrip: Trip?
+    @Published var tripPosts: [Post] = []
 }

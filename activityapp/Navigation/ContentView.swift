@@ -14,6 +14,7 @@ struct ContentView: View {
     @Environment(\.appDelegate) var appDelegate
     
     var retrievePostService = RetrievePostService()
+    var tripService = TripService()
     
     var client: SupabaseClient {
         SupabaseClient(
@@ -27,14 +28,28 @@ struct ContentView: View {
 
         Task {
             if let post = await retrievePostService.getPost(postId: postId) {
-                print("🔥 Found post:", post.id)
+                print("Found post:", post.id)
 
                 await MainActor.run {
                     navigationHandler.selectedPost = post
                     appDelegate.pendingPostId = nil
                 }
             } else {
-                print("🔥 Failed to load post")
+                print("Failed to load post")
+            }
+        }
+    }
+    
+    func processTripNotification(tripId: String) {
+        print("Processing: ", tripId)
+        Task {
+            if let trip = await tripService.getTripById(tripId: tripId) {
+                print("Found trip: ", trip.id)
+                
+                await MainActor.run{
+                    navigationHandler.selectedTrip = trip
+                    appDelegate.pendingTripId = nil
+                }
             }
         }
     }
@@ -112,29 +127,46 @@ struct ContentView: View {
                                 PostUploadQueue.shared.postStore = postStore
                                 PostUploadQueue.shared.retryAll()
                             }
-                            .onChange(of: authStore.isAuthenticated) { _, authenticated in
+                            .onChange(of: authStore.isAuthenticated, initial: true) { _, authenticated in
                                 guard authenticated else { return }
 
                                 if let postId = appDelegate.pendingPostId {
+                                    appDelegate.pendingPostId = nil
                                     processPostNotification(postId: postId)
+                                }
+                                if let tripId = appDelegate.pendingTripId {
+                                    appDelegate.pendingTripId = nil
+                                    processTripNotification(tripId: tripId)
+                                }
+                                if let friendId = appDelegate.pendingFriendId {
+                                    appDelegate.pendingFriendId = nil
+                                    userView = 2
                                 }
                             }
                             .onReceive(NotificationCenter.default.publisher(for: .notificationTapped)) { notification in
                                 print("🔥 Received notificationTapped")
-                                print(notification.userInfo ?? [:])
 
-                                let postId =
-                                    notification.userInfo?["postId"] as? String ??
-                                    notification.userInfo?["post_id"] as? String
+                                guard authStore.isAuthenticated else { return }   // pending values cover this case
+                                let info = notification.userInfo ?? [:]
 
-                                print("🔥 Extracted postId:", postId ?? "nil")
-
-                                if let postId {
+                                if let postId = info["postId"] as? String {
+                                    appDelegate.pendingPostId = nil
                                     processPostNotification(postId: postId)
+                                }
+                                if let tripId = info["tripId"] as? String {
+                                    appDelegate.pendingTripId = nil
+                                    processTripNotification(tripId: tripId)
+                                }
+                                if let friendId = info["friendId"] as? String {
+                                    appDelegate.pendingFriendId = nil
+                                    userView = 2
                                 }
                             }
                             .sheet(item: $navigationHandler.selectedPost) { post in
                                 PostDetailView(post: post)
+                            }
+                            .sheet(item: $navigationHandler.selectedTrip) { trip in
+                                TripDetailView(trip: trip, posts: navigationHandler.tripPosts)
                             }
                             .task {
                                 if(authStore.user!.user_default_view == "home"){
