@@ -14,6 +14,9 @@ struct AccountSettingsView: View {
     
     @State var newUsername: String = ""
     
+    @State var userNotificationSettings: UserNotificationSettings? = nil
+    var notificationSettingsService = NotificationSettingsService()
+    
     @State var showAlert = false
     @State var showDeleteAlert = false
     
@@ -44,8 +47,6 @@ struct AccountSettingsView: View {
                                         return
                                     }
                                     
-                                } else {
-                                    return
                                 }
                                 
                             }
@@ -65,6 +66,16 @@ struct AccountSettingsView: View {
                 }
                 Section("Default view when openning app"){
                     DefaultView()
+                }
+                Section("Notifications") {
+                    if let user = authStore.user,
+                       let settingsBinding = Binding($userNotificationSettings) {
+                        NavigationLink {
+                            NotificationSettingsView(settings: settingsBinding, user: user)
+                        } label: {
+                            Text("Notification settings")
+                        }
+                    }
                 }
                 Section("Share app"){
                     ShareLink(item: "Join Caravyn Beta Testing! https://testflight.apple.com/join/PxBqJVAG"){
@@ -128,5 +139,12 @@ struct AccountSettingsView: View {
             .background(Color.background)
         }
         .background(Color.background)
+        .task {
+            if let userId = authStore.user?.id {
+                userNotificationSettings = await notificationSettingsService.getNotificationSettings(userId: userId)
+                print(userNotificationSettings)
+            }
+            
+        }
     }
 }
