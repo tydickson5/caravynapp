@@ -12,6 +12,7 @@ struct SubmitSignInButton: View {
     @Binding var email: String
     @Binding var password: String
     @Binding var valid: Bool
+    @Binding var checkedTermsOfService: Bool
     
     @EnvironmentObject var authStore: AuthStore
     
@@ -41,5 +42,6 @@ struct SubmitSignInButton: View {
         )
         .disabled(authStore.isLoginLoading)
         .disabled(!valid)
+        .disabled(!checkedTermsOfService)
     }
 }

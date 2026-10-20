@@ -14,6 +14,8 @@ struct LoginView: View{
     
     @State var showForgotPassword = false
     
+    @State var checkedTermsOfSerice = true
+    
     @EnvironmentObject var authStore: AuthStore
     
     var body: some View {
@@ -29,7 +31,7 @@ struct LoginView: View{
                     
                     PasswordSecureField(password: $password, typeNormal: true)
 
-                    SubmitSignInButton(typeLogin: true, email: $email, password: $password, valid: $valid)
+                    SubmitSignInButton(typeLogin: true, email: $email, password: $password, valid: $valid, checkedTermsOfService: $checkedTermsOfSerice)
                     
                     NavigationLink {
                         SignUpView()

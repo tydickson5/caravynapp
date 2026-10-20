@@ -14,6 +14,8 @@ struct SignUpView: View{
     @State var confirmPassword: String = ""
     @State var valid: Bool = false
     
+    @State var checkedTermsOfService: Bool = false
+    
     @EnvironmentObject var authHandler: AuthHandler
     
     var body: some View {
@@ -28,8 +30,11 @@ struct SignUpView: View{
                 EmailTextField(email: $email)
 
                 PasswordCheck(password: $password, confirmPassword: $confirmPassword, valid: $valid)
+                
+                TermsOfServiceCheckBox(checkedTermsOfService: $checkedTermsOfService)
+                    .padding(.bottom, 10)
 
-                SubmitSignInButton(typeLogin: false, email: $email, password: $password, valid: $valid)
+                SubmitSignInButton(typeLogin: false, email: $email, password: $password, valid: $valid, checkedTermsOfService: $checkedTermsOfService)
                 
                 
             }

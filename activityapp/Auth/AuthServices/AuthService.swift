@@ -28,6 +28,10 @@ struct AuthService {
         try await SupabaseHandler.client.auth.session
     }
     
+    func removeSession() async throws {
+        try await SupabaseHandler.client.auth.signOut()
+    }
+    
     func sendPasswordReset(email: String) async throws{
         let redirectTo = URL(string: "caravyn://reset-password")
         

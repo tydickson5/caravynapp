@@ -127,6 +127,7 @@ class AuthStore: ObservableObject {
         isAuthenticated = false
         user = nil
         session = nil
+        //authService.removeSession()
         userCache.removeUser()
     }
     
