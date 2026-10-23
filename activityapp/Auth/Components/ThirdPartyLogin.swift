@@ -9,13 +9,13 @@ import SwiftUI
 
 struct ThirdPartyLogin: View {
     
-    @EnvironmentObject var authHandler: AuthHandler
+    @EnvironmentObject var authStore: AuthStore
     
     var body: some View{
         VStack(spacing: 12) {
             // Apple button
             Button {
-                Task { await authHandler.signInWithApple() }
+                Task { await authStore.signIn(provider: "apple", email: "", password: "") }
             } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "apple.logo")
@@ -32,7 +32,7 @@ struct ThirdPartyLogin: View {
 
             // Google button
             Button {
-                Task { await authHandler.signInWithGoogle() }
+                Task { await authStore.signIn(provider: "google", email: "",password: "") }
             } label: {
                 HStack(spacing: 8) {
                     Image("Google") // add Google's "G" logo to Assets

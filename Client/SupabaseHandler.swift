@@ -21,7 +21,7 @@ enum SupabaseHandler
     static let productionBackendURL: String = "https://activityapp-backend.fly.dev"
     
     //dev prod
-    #if true
+    #if false
         #if DEBUG
         static let backendURL = localBackendURL
         static let supabaseURL = "https://coeythfyfwzrwzuqowfe.supabase.co"
