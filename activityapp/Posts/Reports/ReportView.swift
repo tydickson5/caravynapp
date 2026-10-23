@@ -22,6 +22,7 @@ struct ReportView: View {
     
     var reportService = ReportService()
     
+    
     let postReasons = [
         "Innapropriate Content",
         "Use of AI",

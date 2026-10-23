@@ -149,9 +149,12 @@ struct PostDetailView: View {
                 
                 
                 //delete post button
-                if(post.user_id == authStore.user!.id){
-                    DeletePostButton(post: post)
+                if let userId = authStore.user?.id {
+                    if(post.user_id == userId){
+                        DeletePostButton(post: post)
+                    }
                 }
+                
             }
             .padding()
             .padding(.bottom, 60)

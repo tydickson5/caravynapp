@@ -11,9 +11,15 @@ struct BlockService {
     //get all user ids that are blocked
     func getBlockedUsers(userId: String) async -> [String] {
         do {
-            let fetched: [String] = try await SupabaseHandler.client.from("block_user").select("blocked_user_id").eq("userId", value: userId).execute().value
-            
-            return fetched
+            let fetched: [[String: String]] = try await SupabaseHandler.client
+                .from("block_user")
+                .select("blocked_user_id")
+                .eq("user_id", value: userId)
+                .execute()
+                .value
+
+            return fetched.compactMap { $0["blocked_user_id"] }
+
         } catch {
             print(error)
             return []
@@ -23,12 +29,12 @@ struct BlockService {
     //blocks user and returns their user id
     func blockUser(userId: String, blockUserId: String) async -> String?{
         do {
-            let fetched: String = try await SupabaseHandler.client.from("block_user").insert([
+            let fetched: [String: String] = try await SupabaseHandler.client.from("block_user").insert([
                 "user_id": userId,
                 "blocked_user_id": blockUserId
-            ]).select("block_user_id").single().execute().value
+            ]).select("blocked_user_id").single().execute().value
             
-            return fetched
+            return fetched["blocked_user_id"]
         } catch {
             print(error)
             return nil

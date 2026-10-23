@@ -51,6 +51,9 @@ struct OtherUserView: View {
                     Text(user.username)
                         .font(.title)
                     Spacer()
+                    if let userId = authStore.user?.id {
+                        BlockUserButton(userId: userId, otherUser: user)
+                    }
                 }
                 .padding(.bottom, 20)
                 
@@ -83,6 +86,8 @@ struct OtherUserView: View {
                             .padding(.bottom, 30)
                     }
                 }
+                
+                
                 
                 TripListElement(level: 1, trips: trips)
                 HStack{

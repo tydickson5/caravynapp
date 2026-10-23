@@ -24,6 +24,7 @@ class PostStore: ObservableObject {
     private var uploadPostService: UploadPostService
     private var retrievePostService: RetrievePostService
     private var backendService: BackendService
+    private var blockService = BlockService()
     
     init(uploadPostService: UploadPostService, retrievePostService: RetrievePostService, backendService: BackendService) {
         self.uploadPostService = uploadPostService
@@ -54,6 +55,8 @@ class PostStore: ObservableObject {
         }
         
         friendPosts.append(contentsOf: userPosts)
+        
+        await removeBlockedPosts(userId: userId)
     }
     
     func loadUserPosts(userId: String) async {
@@ -63,6 +66,16 @@ class PostStore: ObservableObject {
             ToastManager.shared.error("Error loading posts")
             return
         }
+    }
+    
+    func removeBlockedPosts(userId: String) async {
+        let blockedUsers = await blockService.getBlockedUsers(userId: userId)
+        
+        if(blockedUsers.isEmpty) { return }
+        
+        let blockedSet = Set(blockedUsers)
+        friendPosts.removeAll { blockedSet.contains($0.user_id) }
+        publicPosts.removeAll { blockedSet.contains($0.user_id)}
     }
     
     func createPost(isImagePost: Bool, postId: String, imageURL: UIImage?, videoURL: URL?, userId: String, groupId: String, caption: String, latitude: Double, longitude: Double, state: String, created_at: String?) async -> Bool {
