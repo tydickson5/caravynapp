@@ -26,7 +26,7 @@ struct WelcomeOnboardView: View {
                         .foregroundStyle(.dark)
                         .padding(.top, 80)
                     Spacer()
-                    Text("Welcome, the goal of this app is to show your travels to people all over the world. I want to provide a way for people to be inspired to travel new places by seeing experiences or photographs.\n\nI would like to ask that you post only photos from travel or cool experiences as this is not a normal social media platform but more for helping people see specifically the world.\n\nThank you for taking the time to beta test this app. It is very helpful.")
+                    Text("Thank you for taking the time to use my app. If you have any suggestions feel free to reach out personally to me at tydickson255@gmail.com. Your feedback will probably get used and will make the app better. Thank you.")
                         .padding()
                         .foregroundStyle(.lightBlue)
                         .background(.white.opacity(0.8))
@@ -39,7 +39,7 @@ struct WelcomeOnboardView: View {
                     Button(action: {
                         showWelcomeOnboardView = false
                     }) {
-                        Text("Continue")
+                        Text("Explore")
                         Image(systemName: "arrow.right")
                     }
                         .frame(maxWidth: .infinity)

@@ -14,7 +14,7 @@ enum SupabaseHandler
     ///Limit Number of Users
     static let maxNumberOfUsers = 100
     
-    static let ipAddress: String =  "192.168.68.64"
+    static let ipAddress: String =  "192.168.1.176"
     
     static let localBackendURL: String = "http://\(ipAddress):3000"
     
@@ -32,7 +32,7 @@ enum SupabaseHandler
         static let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkeHFmaHJzdWhtcWRicGVxdGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMzcwMzMsImV4cCI6MjA5MzYxMzAzM30.6My-s4mropLOelDfcl2KSQAX2gQI2QP0y4Db0pcLICg"
         #endif
     #else
-    static let backendURL = localBackendURL
+    static let backendURL = productionBackendURL
     static let supabaseURL = "https://vdxqfhrsuhmqdbpeqtbt.supabase.co"
     static let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkeHFmaHJzdWhtcWRicGVxdGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMzcwMzMsImV4cCI6MjA5MzYxMzAzM30.6My-s4mropLOelDfcl2KSQAX2gQI2QP0y4Db0pcLICg"
     #endif
