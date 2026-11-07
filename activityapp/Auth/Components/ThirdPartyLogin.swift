@@ -28,6 +28,10 @@ struct ThirdPartyLogin: View {
                 .foregroundColor(.white)
                 .background(Color.black)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.white, lineWidth: 1)
+                )
             }
 
             // Google button
