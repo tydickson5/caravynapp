@@ -21,11 +21,14 @@ struct PermissionsOnboardView: View {
     
 
     var body: some View {
-        if(showWelcomeOnboardView){
-            WelcomeOnboardView(showWelcomeOnboardView: $showWelcomeOnboardView)
+        if showWelcomeOnboardView {
+            WelcomeOnboardView(
+                showWelcomeOnboardView: $showWelcomeOnboardView
+            )
         } else {
-            ZStack{
+            ZStack {
                 Color.background.ignoresSafeArea()
+
                 VStack(spacing: 24) {
                     Spacer()
 
@@ -33,78 +36,37 @@ struct PermissionsOnboardView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    Text("Location permissions are need to use this app. Notifications permissions are recommended to know when friends post")
+                    ProgressView()
+
+                    Text("Setting up your experience...")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
 
                     Spacer()
-
-                    permissionRow(
-                        icon: "bell.fill",
-                        title: "Notifications",
-                        subtitle: "Get notified about posts, comments, and likes",
-                        enabled: notificationsEnabled,
-                        action: requestNotifications
-                    )
-
-                    permissionRow(
-                        icon: "location.fill",
-                        title: "Location",
-                        subtitle: "See posts around the world",
-                        enabled: locationEnabled,
-                        action: requestLocation
-                    )
-
-                    Spacer()
-
-                    Button(action: finishOnboarding) {
-                        Text("Continue")
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 20)
-                            .tint(.white)
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(.dark)
-                    )
-                    .padding(.horizontal)
-
-                    Button("Skip for now", action: finishOnboarding)
-                        .tint(.secondary)
-                        .padding(.bottom)
                 }
                 .padding()
-                .onAppear(perform: refreshStatuses)
             }
-            
+            .onAppear {
+                requestPermissions()
+            }
         }
-        
+    }
+    
+    func requestPermissions() {
+        requestLocation()
+
+        // Give the location permission dialog time to appear and finish.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            requestNotifications()
+
+            // Wait for the notification permission dialog.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                refreshStatuses()
+                finishOnboarding()
+            }
+        }
     }
 
-    @ViewBuilder
-    func permissionRow(icon: String, title: String, subtitle: String, enabled: Bool, action: @escaping () -> Void) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.title2)
-                .frame(width: 36)
-            VStack(alignment: .leading) {
-                Text(title).fontWeight(.semibold)
-                Text(subtitle).font(.caption).foregroundColor(.secondary)
-            }
-            Spacer()
-            Button(enabled ? "Enabled" : "Enable", action: action)
-                .disabled(enabled)
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.dark.opacity(0.3), lineWidth: 1)
-        )
-        .padding(.horizontal)
-    }
 
     func refreshStatuses() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
@@ -127,11 +89,12 @@ struct PermissionsOnboardView: View {
     }
 
     func requestLocation() {
+        guard !locationHandler.isAuthorized else {
+            locationEnabled = true
+            return
+        }
+
         locationHandler.requestPermission()
-        // If LocationHandler is a delegate-based CLLocationManager wrapper,
-        // update `locationEnabled` from its @Published authorization status
-        // instead of setting it here directly.
-        locationEnabled = true
     }
 
     func finishOnboarding() {
@@ -141,3 +104,4 @@ struct PermissionsOnboardView: View {
         onComplete()
     }
 }
+

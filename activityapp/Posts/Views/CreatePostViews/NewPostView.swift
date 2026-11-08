@@ -9,7 +9,9 @@ import SwiftUI
 
 struct NewPostView: View {
     
-    @State var showCamera = true
+    @State var showCamera = false
+    
+    @State private var showLocationAlert = false
     
     @State private var capturedMedia: CameraResult?
     @StateObject private var postHandler = PostsHandler()
@@ -57,12 +59,35 @@ struct NewPostView: View {
                 capturedMedia = result
             }
         }
+        .alert("Location Required", isPresented: $showLocationAlert) {
+            Button {
+                locationHandler.openSettings()
+            } label: {
+                Text("Open Settings")
+                    .tint(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .cornerRadius(10)
+            }
+            Button("Cancel") {
+                showLocationAlert = false
+            }
+            .tint(.secondary)
+        } message: {
+            Text("Caravyn needs location access to associate your posts with the places you've visited. Please enable location access in Settings.")
+        }
         .onAppear {
-            locationHandler.recenter()
-            
-            //check for location perms
-            if locationHandler.isAuthorized == false {
+            if locationHandler.isAuthorized {
+                locationHandler.recenter()
+                showCamera = true
+            } else if locationHandler.authorizationStatus == .denied {
+                showLocationAlert = true
+            } else {
                 locationHandler.requestPermission()
+
+                ToastManager.shared.error(
+                    "You need location permissions on to be able to post"
+                )
             }
         }
         .onDisappear {
