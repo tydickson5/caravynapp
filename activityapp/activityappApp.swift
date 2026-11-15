@@ -23,6 +23,7 @@ struct activityappApp: App {
     @StateObject private var locationHandler = LocationHandler()
     @StateObject private var navigationHandler = NavigationHandler()
     @StateObject private var friendStore = FriendStore(friendService: FriendService(), friendRequestService: FriendRequestService(), backendService: BackendService())
+    @StateObject private var countriesVistedStore = CountriesVisitedStore()
     
     private var notificationCallbackService = NotificationCallbackService()
     
@@ -34,13 +35,13 @@ struct activityappApp: App {
                 .environmentObject(locationHandler)
                 .environmentObject(navigationHandler)
                 .environmentObject(friendStore)
+                .environmentObject(countriesVistedStore)
                 .environment(\.appDelegate, appDelegate)
                 .task {
                     await authStore.loadSession()
                     authStore.appDelegate = appDelegate
                     appDelegate.authStore = authStore
-                    
-                    
+
                 }
                 .toast()
                 .onOpenURL { url in

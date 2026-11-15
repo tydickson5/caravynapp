@@ -11,6 +11,7 @@ struct AccountView: View {
     
     @EnvironmentObject var authStore: AuthStore
     @EnvironmentObject var postStore: PostStore
+    @EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
     var tripService = TripService()
     var retrievePostService = RetrievePostService()
     
@@ -58,6 +59,11 @@ struct AccountView: View {
                     } label: {
                         Text("My Trips")
                     }
+                    .padding(.top, 10)
+                    .padding(.bottom, 10)
+                    
+                    MyCountriesMapComponent()
+
                     .padding(.top, 10)
                     .padding(.bottom, 10)
                     if(!pendingStore.pendingPosts.isEmpty){
@@ -109,6 +115,8 @@ struct AccountView: View {
                     }
             
             extraPosts = postsNotInAnyTrip()
+            
+            await countriesVisitedStore.loadUserCountries(userId: user.id)
         }
         
     }
