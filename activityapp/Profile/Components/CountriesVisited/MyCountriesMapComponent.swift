@@ -11,17 +11,23 @@ import MapKit
 
 struct MyCountriesMapComponent: View {
 
-    @EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
+    //@EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
+    var other: Bool
+    
+    var countries: [Country]
+    var visitedCountries: [VisitedCountry]
+    
+    var posts: [Post]
 
     // Match visited country names to the full Country objects
     private var visitedCountriesForMap: [Country] {
         let visitedNames = Set(
-            countriesVisitedStore.visitedCountries.map {
+            visitedCountries.map {
                 $0.name.lowercased()
             }
         )
 
-        return countriesVisitedStore.countries.filter {
+        return countries.filter {
             visitedNames.contains($0.name.lowercased())
         }
     }
@@ -42,6 +48,15 @@ struct MyCountriesMapComponent: View {
     var body: some View {
         NavigationStack{
             Map(position: $cameraPosition) {
+                ForEach(posts){ post in
+                    Annotation("", coordinate: post.coordinate!) {
+                        Image(systemName: "mappin")
+                            .font(.title)
+                            .foregroundStyle(Color.pin)
+                            .frame(width: 50, height: 50)
+                    }
+                }
+                
                 ForEach(visitedCountriesForMap) { country in
 
                     // A country can have multiple polygons
@@ -61,15 +76,12 @@ struct MyCountriesMapComponent: View {
             .cornerRadius(16)
             .overlay(alignment: .bottomTrailing) {
                 HStack() {
-     
-                    
-
                     NavigationLink {
-                        MapView()
+                        MapView(other: other, countries: countries, visitedCountries: visitedCountries)
                             .toolbar(.hidden, for: .tabBar)
                     } label: {
                         HStack{
-                            Text("Your Countries")
+                            Text(other ? "View Map" : "Your Countries")
                             Image(systemName: "chevron.right")
                                 //.foregroundStyle()
                         }
@@ -78,14 +90,17 @@ struct MyCountriesMapComponent: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                             
                     }
-                    NavigationLink {
-                        MyCountriesView()
-                    } label: {
-                        Image(systemName: "plus")
-                            .padding()
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
+                    if !other {
+                        NavigationLink {
+                            MyCountriesView()
+                        } label: {
+                            Image(systemName: "plus")
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                        }
                     }
+                    
                 }
                 .padding()
             }

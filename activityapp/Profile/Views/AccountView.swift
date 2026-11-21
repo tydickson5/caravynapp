@@ -62,7 +62,7 @@ struct AccountView: View {
                     .padding(.top, 10)
                     .padding(.bottom, 10)
                     
-                    MyCountriesMapComponent()
+                    MyCountriesMapComponent(other: false, countries: countriesVisitedStore.countries, visitedCountries: countriesVisitedStore.visitedCountries, posts: postStore.userPosts)
 
                     .padding(.top, 10)
                     .padding(.bottom, 10)

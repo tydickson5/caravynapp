@@ -11,17 +11,22 @@ import MapKit
 
 struct MapView: View {
     
-    @EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
+    //@EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
+    
+    var other: Bool
+    
+    var countries: [Country]
+    var visitedCountries: [VisitedCountry]
 
     // Match visited country names to the full Country objects
     private var visitedCountriesForMap: [Country] {
         let visitedNames = Set(
-            countriesVisitedStore.visitedCountries.map {
+            visitedCountries.map {
                 $0.name.lowercased()
             }
         )
 
-        return countriesVisitedStore.countries.filter {
+        return countries.filter {
             visitedNames.contains($0.name.lowercased())
         }
     }
@@ -52,21 +57,20 @@ struct MapView: View {
         .mapStyle(.standard(elevation: .flat))
         .ignoresSafeArea()
         .overlay(alignment: .bottomTrailing){
-            NavigationLink {
-                MyCountriesView()
-            } label: {
-                Image(systemName: "plus")
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-                
+            if !other {
+                NavigationLink {
+                    MyCountriesView()
+                } label: {
+                    Image(systemName: "plus")
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                    
+                }
+                .padding(.trailing, 20)
+                .padding(.bottom, 20)
             }
-            .padding(.trailing, 20)
-            .padding(.bottom, 20)
+            
         }
     }
-    
-    
-    
-
 }

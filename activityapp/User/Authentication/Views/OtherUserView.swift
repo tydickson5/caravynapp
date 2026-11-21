@@ -12,6 +12,7 @@ struct OtherUserView: View {
     @EnvironmentObject var authStore: AuthStore
     @EnvironmentObject var friendStore: FriendStore
     @EnvironmentObject var postStore: PostStore
+    @EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
     var retrievePostService = RetrievePostService()
     var friendService = FriendService()
     var friendRequestService = FriendRequestService()
@@ -22,6 +23,7 @@ struct OtherUserView: View {
     @State var extraPosts: [Post] = []
     
     @State var user: AppUser
+    @State var visitedCountries: [VisitedCountry] = []
     
     var tripService = TripService()
     @State var trips: [Trip] = []
@@ -87,7 +89,7 @@ struct OtherUserView: View {
                     }
                 }
                 
-                
+                MyCountriesMapComponent(other: true, countries: countriesVisitedStore.countries, visitedCountries: visitedCountries, posts: userPosts)
                 
                 TripListElement(level: 1, trips: trips)
                 HStack{
@@ -113,6 +115,8 @@ struct OtherUserView: View {
             
             extraPosts = postsNotInAnyTrip()
             
+            await visitedCountries = countriesVisitedStore.loadOtherUserCountries(userId: user.id)
+            
         }
         .task {
 
@@ -122,6 +126,8 @@ struct OtherUserView: View {
                     }
             
             extraPosts = postsNotInAnyTrip()
+            
+            await visitedCountries = countriesVisitedStore.loadOtherUserCountries(userId: user.id)
         }
     }
 }

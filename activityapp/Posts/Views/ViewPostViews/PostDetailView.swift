@@ -82,6 +82,8 @@ struct PostDetailView: View {
                     
                 }
                 
+                PostMapElement(post: post)
+                
                 //comment text field
                 HStack{
                     TextField("Add a comment", text: $newComment)
@@ -109,6 +111,8 @@ struct PostDetailView: View {
                 )
                 .padding(.bottom, 10)
                 .padding(.top, 10)
+                
+                
                 
                 //comments
                 VStack{
