@@ -55,15 +55,8 @@ struct PermissionsOnboardView: View {
     func requestPermissions() {
         requestLocation()
 
-        // Give the location permission dialog time to appear and finish.
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             requestNotifications()
-
-            // Wait for the notification permission dialog.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                refreshStatuses()
-                finishOnboarding()
-            }
         }
     }
 
@@ -78,12 +71,23 @@ struct PermissionsOnboardView: View {
     }
 
     func requestNotifications() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: [.alert, .badge, .sound]
+        ) { granted, error in
+
+            if let error = error {
+                print("Notification authorization error:", error)
+            }
+
             DispatchQueue.main.async {
                 notificationsEnabled = granted
+
                 if granted {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
+
+                refreshStatuses()
+                finishOnboarding()
             }
         }
     }

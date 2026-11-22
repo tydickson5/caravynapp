@@ -43,6 +43,7 @@ struct PostMapElement: View {
                 }
             }
             .frame(height: 200)
+            .cornerRadius(16)
         } else {
             ContentUnavailableView(
                 "No Location",

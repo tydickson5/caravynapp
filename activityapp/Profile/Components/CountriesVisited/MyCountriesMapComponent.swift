@@ -48,6 +48,7 @@ struct MyCountriesMapComponent: View {
     var body: some View {
         NavigationStack{
             Map(position: $cameraPosition) {
+                /*
                 ForEach(posts){ post in
                     Annotation("", coordinate: post.coordinate!) {
                         Image(systemName: "mappin")
@@ -56,6 +57,7 @@ struct MyCountriesMapComponent: View {
                             .frame(width: 50, height: 50)
                     }
                 }
+                 */
                 
                 ForEach(visitedCountriesForMap) { country in
 
@@ -67,7 +69,7 @@ struct MyCountriesMapComponent: View {
 
                         MapPolygon(coordinates: coordinates)
                             .foregroundStyle(.lightBlue.opacity(0.35))
-                            .stroke(.lightBlue, lineWidth: 2)
+                            .stroke(.lightBlue, lineWidth: 1)
                     }
                 }
             }

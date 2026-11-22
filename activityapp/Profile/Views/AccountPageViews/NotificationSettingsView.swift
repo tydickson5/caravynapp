@@ -69,5 +69,25 @@ struct NotificationSettingsView: View {
         }
         .scrollContentBackground(.hidden)
         .background(Color.background)
+        .task {
+            let center = UNUserNotificationCenter.current()
+            let settings = await center.notificationSettings()
+
+            if settings.authorizationStatus == .notDetermined {
+                do {
+                    let granted = try await center.requestAuthorization(
+                        options: [.alert, .badge, .sound]
+                    )
+
+                    if granted {
+                        await MainActor.run {
+                            UIApplication.shared.registerForRemoteNotifications()
+                        }
+                    }
+                } catch {
+                    print("Notification permission error:", error)
+                }
+            }
+        }
     }
 }

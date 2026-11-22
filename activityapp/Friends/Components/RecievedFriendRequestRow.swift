@@ -54,7 +54,7 @@ struct RecievedFriendRequestRow: View {
                 
                 Button(action: {
                     Task {
-                        await friendStore.deleteFriendRequest(friendRequestId: request.id, friendId: request.friend_id)
+                        await friendStore.denyFriendRequest(friendRequestId: request.id, friendId: request.user_id)
                     }
                 }){
                     Image(systemName: "trash.fill")

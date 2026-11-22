@@ -146,10 +146,13 @@ class FriendStore: ObservableObject {
             isLoading = false
         }
         
-        if(!friendRequestService.friendRequestSent(friendId: friendId, sentFriendRequests: sentFriendRequests)){
+        
+        if(!friendRequestService.friendRequestSent(friendId: friendId, sentFriendRequests: sentFriendRequests) ){
+            print(recievedFriendRequests)
             ToastManager.shared.error("Error! Reload page and try again")
             return
         }
+         
         
         do {
             
@@ -160,6 +163,38 @@ class FriendStore: ObservableObject {
                 }
             } else {
                 ToastManager.shared.error("Error deleting friend request")
+                return
+            }
+
+        } catch {
+            ToastManager.shared.error("Error")
+            return
+        }
+    }
+    
+    func denyFriendRequest(friendRequestId: String, friendId: String) async {
+        isLoading = true
+        defer {
+            isLoading = false
+        }
+        
+        
+        if(!friendRequestService.friendRequestRecieved(friendId: friendId, recievedFriendRequests: recievedFriendRequests) ){
+            print(recievedFriendRequests)
+            ToastManager.shared.error("Error! Reload page and try again")
+            return
+        }
+         
+        
+        do {
+            
+            
+            if try await friendRequestService.deleteFriendRequest(friendRequestId: friendRequestId, backendService: backendService) {
+                if let index = recievedFriendRequests.firstIndex(where: { $0.id == friendRequestId }) {
+                    recievedFriendRequests.remove(at: index)
+                }
+            } else {
+                ToastManager.shared.error("Error denying friend request")
                 return
             }
 
