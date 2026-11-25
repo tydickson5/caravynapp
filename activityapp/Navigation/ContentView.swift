@@ -60,6 +60,7 @@ struct ContentView: View {
     @EnvironmentObject var locationHandler: LocationHandler
     @EnvironmentObject var navigationHandler: NavigationHandler
     @EnvironmentObject var friendStore: FriendStore
+    @EnvironmentObject var tripStore: TripStore
     
     
     @StateObject var userLimitCalculator = UserLimitCalculator()
@@ -121,6 +122,8 @@ struct ContentView: View {
                                     await friendStore.loadFriendStoreWithUser(userId: user.id)
                                     
                                     await postStore.loadPosts(userId: user.id, friends: friendStore.friends)
+                                    
+                                    await tripStore.loadTrips(userId: user.id)
 
                                 }
                                 

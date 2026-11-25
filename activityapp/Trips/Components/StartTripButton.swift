@@ -29,7 +29,7 @@ struct StartTripButton: View {
             )
         }
         .sheet(isPresented: $createTripSheetPresented) {
-            CreateTripView()
+            CreateTripFlow(createTripSheetPresented: $createTripSheetPresented)
         }
     }
 }

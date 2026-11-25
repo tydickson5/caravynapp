@@ -44,6 +44,44 @@ struct TripService {
         }
     }
     
+    func createTrip(userId: String, username: String, name: String, description: String, created_at: String, ended_at: String, backendService: BackendService) async -> Trip? {
+        
+        let body: [String: Any] = [
+            "userId": userId,
+            "username": username,
+            "name": name,
+            "description": description,
+            "created_at": created_at,
+            "ended_at": ended_at
+        ]
+        
+        do {
+            
+            guard let request = try await backendService.loadHttpRequest(path: "trips/create", body: body) else {
+                ToastManager.shared.error("Error starting trip")
+                return nil
+            }
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            print(response)
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                
+                throw NSError(domain: "startTrip", code: (response as? HTTPURLResponse)?.statusCode ?? -1)
+            }
+            
+            let newTrip = try JSONDecoder().decode(Trip.self, from: data)
+            
+            print(newTrip)
+            
+            ToastManager.shared.success("Trip created")
+            return newTrip
+            
+        } catch {
+            ToastManager.shared.error("Error creating trip")
+            return nil
+        }
+    }
+    
     func endTrip(tripId: String, backendService: BackendService) async -> Bool {
         
         let body: [String: Any] = [
@@ -118,16 +156,24 @@ struct TripService {
                 return false
             }
             
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                print("addUser failed:", (response as? HTTPURLResponse)?.statusCode ?? -1,
+                      String(data: data, encoding: .utf8) ?? "")
+                throw NSError(domain: "addUserToTrip", code: (response as? HTTPURLResponse)?.statusCode ?? -1)
+            }
             
             ToastManager.shared.success("Added")
             return true
             
         } catch {
+            print(error)
             ToastManager.shared.error("Error adding user")
             return false
         }
     }
-    
+
     func removeUserFromTrip(tripId: String, userId: String, backendService: BackendService) async -> Bool {
         let body: [String: Any] = [
             "tripId": tripId,
@@ -140,10 +186,19 @@ struct TripService {
                 return false
             }
             
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                print("removeUser failed:", (response as? HTTPURLResponse)?.statusCode ?? -1,
+                      String(data: data, encoding: .utf8) ?? "")
+                throw NSError(domain: "removeUserFromTrip", code: (response as? HTTPURLResponse)?.statusCode ?? -1)
+            }
+            
             ToastManager.shared.success("You have left")
             return true
             
         } catch {
+            print(error)
             ToastManager.shared.error("Error leaving trip")
             return false
         }

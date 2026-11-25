@@ -24,6 +24,7 @@ struct activityappApp: App {
     @StateObject private var navigationHandler = NavigationHandler()
     @StateObject private var friendStore = FriendStore(friendService: FriendService(), friendRequestService: FriendRequestService(), backendService: BackendService())
     @StateObject private var countriesVistedStore = CountriesVisitedStore()
+    @StateObject private var tripsStore = TripStore()
     
     private var notificationCallbackService = NotificationCallbackService()
     
@@ -36,6 +37,7 @@ struct activityappApp: App {
                 .environmentObject(navigationHandler)
                 .environmentObject(friendStore)
                 .environmentObject(countriesVistedStore)
+                .environmentObject(tripsStore)
                 .environment(\.appDelegate, appDelegate)
                 .task {
                     await authStore.loadSession()

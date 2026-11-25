@@ -21,8 +21,9 @@ struct EditTripView: View {
     @State private var tripEndDate = Date()
     
     var dateFormatterService = DateFormatterService()
-    var backendService = BackendService()
-    var tripService = TripService()
+    
+    @EnvironmentObject var authStore: AuthStore
+    @EnvironmentObject var tripStore: TripStore
     
     var body: some View {
         NavigationStack {
@@ -70,13 +71,17 @@ struct EditTripView: View {
                 
                 Button(action: {
                     Task {
-                        let success = await  tripService.updateTripDetails(tripId: trip.id, name: name, description: description, created_at: dateFormatterService.supabaseDateString(tripStartDate), ended_at: dateFormatterService.supabaseDateString(tripEndDate), backendService: backendService)
-                        
-                        if(success){
-                            dismiss()
-                        } else {
-                            return
+                        if let user = authStore.user {
+                            let success = await  tripStore.updateTripDetails(userId: user.id, tripId: trip.id, name: name, description: description, created_at: dateFormatterService.supabaseDateString(tripStartDate), ended_at: dateFormatterService.supabaseDateString(tripEndDate))
+                            if(success){
+                                dismiss()
+                            } else {
+                                return
+                            }
                         }
+                        
+                        return
+                        
                     }
                 }){
                     Text("Update")
@@ -84,6 +89,7 @@ struct EditTripView: View {
                         .frame(height: 20)
                         .tint(.white)
                 }
+                .disabled(tripStore.isLoading)
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 8)
@@ -91,7 +97,13 @@ struct EditTripView: View {
                         .stroke(Color.dark.opacity(0.5), lineWidth: 2)
                 )
                 
-                AddUserToTripElement(trip: trip)
+                NavigationLink(destination: TripUsersView(trip: trip), label: {
+                    HStack{
+                        Text("Add friends to trip")
+                        Image(systemName: "chevron.right")
+                    }
+                    
+                })
             }
             .navigationTitle("Edit Trip")
             .navigationBarTitleDisplayMode(.inline)

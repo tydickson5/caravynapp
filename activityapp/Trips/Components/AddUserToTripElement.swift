@@ -17,14 +17,15 @@ struct AddUserToTripElement: View {
     
     @EnvironmentObject var friendStore: FriendStore
     @EnvironmentObject var authStore: AuthStore
-    var tripService = TripService()
+    @EnvironmentObject var tripStore: TripStore
+    //var tripService = TripService()
     var friendService = FriendService()
     var backendService = BackendService()
     
     @State private var showFriends = false
     
     func reloadUserGroups() async {
-        peopleInTrip = await tripService.getUsersInTrip(tripId: trip.id) ?? []
+        peopleInTrip = await tripStore.getUsersInTrip(tripId: trip.id)
         
         let friendUsers = await friendService.getUsersFromFriends(friends: friendStore.friends)
         
@@ -40,7 +41,7 @@ struct AddUserToTripElement: View {
             
             //list of people in trip (could be not friend)
             VStack(alignment: .leading){
-                Text("Members").font(.caption)
+                Text("Current members").font(.caption)
                 ForEach(peopleInTrip, id: \.id){ user in
                     Divider()
                     HStack{
@@ -87,11 +88,9 @@ struct AddUserToTripElement: View {
                         Spacer()
                         Button(action: {
                             Task {
-                                let result = await tripService.addUserToTrip(tripId: trip.id, userId: user.id, backendService: backendService)
+                                let _ = await tripStore.addUserToTrip(tripId: trip.id, userId: user.id)
                                 
-                                if(result) {
-                                    await reloadUserGroups()
-                                }
+                                await reloadUserGroups()
                             }
                             
                         }){
@@ -104,10 +103,8 @@ struct AddUserToTripElement: View {
             Button(action: {
                 Task {
                     if let userId = authStore.user?.id {
-                        let result = await tripService.removeUserFromTrip(tripId: trip.id, userId: userId, backendService: backendService)
-                        if(result) {
-                            await reloadUserGroups()
-                        }
+                        let _ = await tripStore.removeUserFromTrip(tripId: trip.id, userId: userId)
+                        await reloadUserGroups()
                     }
                     
                 }

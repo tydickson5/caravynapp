@@ -12,6 +12,7 @@ struct AccountView: View {
     @EnvironmentObject var authStore: AuthStore
     @EnvironmentObject var postStore: PostStore
     @EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
+    //@EnvironmentObject var tripStore: TripStore
     var tripService = TripService()
     var retrievePostService = RetrievePostService()
     
@@ -40,71 +41,73 @@ struct AccountView: View {
     var body: some View {
         NavigationStack{
             ScrollView {
-                
-                if let user = authStore.user {
-                    HStack{
-                        Text(user.username)
-                            .font(.title)
-                        Spacer()
-                        NavigationLink {
-                            AccountSettingsView()
-                        } label: {
-                            Label("", systemImage: "gearshape.fill")
+                VStack{
+                    if let user = authStore.user {
+                        HStack{
+                            Text(user.username)
+                                .font(.title)
+                            Spacer()
+                            NavigationLink {
+                                AccountSettingsView()
+                            } label: {
+                                Label("", systemImage: "gearshape.fill")
+                            }
                         }
-                    }
-                    .padding(.bottom, 20)
-                    StartTripButton()
-                    NavigationLink {
-                        TripsView()
-                    } label: {
-                        Text("My Trips")
-                    }
-                    .padding(.top, 10)
-                    .padding(.bottom, 10)
-                    
-                    MyCountriesMapComponent(other: false, countries: countriesVisitedStore.countries, visitedCountries: countriesVisitedStore.visitedCountries, posts: postStore.userPosts)
-
-                    .padding(.top, 10)
-                    .padding(.bottom, 10)
-                    if(!pendingStore.pendingPosts.isEmpty){
-                        HStack {
-                            Text("\(pendingStore.pendingPosts.count) uploading posts")
-                        }
-                        .padding(.top, 20)
                         .padding(.bottom, 20)
-                    }
-                    TripListElement(level: 1, trips: trips)
-                    HStack{
-                        Text("Posts not in trip").font(.title3)
-                        Spacer()
-                    }
-                    .padding(.top, 10)
-                    .padding(.bottom, 10)
-                    
+                        StartTripButton()
+                        NavigationLink {
+                            TripsView()
+                        } label: {
+                            Text("My Trips")
+                        }
+                        .padding(.top, 10)
+                        .padding(.bottom, 10)
                         
-                    PostListElement(posts: $extraPosts, trip: nil)
+                        MyCountriesMapComponent(other: false, countries: countriesVisitedStore.countries, visitedCountries: countriesVisitedStore.visitedCountries, posts: postStore.userPosts)
+
+                        .padding(.top, 10)
+                        .padding(.bottom, 10)
+                        if(!pendingStore.pendingPosts.isEmpty){
+                            HStack {
+                                Text("\(pendingStore.pendingPosts.count) uploading posts")
+                            }
+                            .padding(.top, 20)
+                            .padding(.bottom, 20)
+                        }
+                        TripListElement(level: 1, trips: trips)
+                        HStack{
+                            Text("Posts not in trip").font(.title3)
+                            Spacer()
+                        }
+                        .padding(.top, 10)
+                        .padding(.bottom, 10)
+                        
+                            
+                        PostListElement(posts: $extraPosts, trip: nil)
+                    }
                 }
+                .padding()
                 
                 
                 
             }
-            .padding()
+            
             .background(Color.background)
-
+            .refreshable {
+                guard let user = authStore.user else {
+                    return
+                }
+                await postStore.loadUserPosts(userId: user.id)
+                if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
+                            trips = fetchedTrips
+                        }
+                
+                extraPosts = postsNotInAnyTrip()
+                
+            }
         }
         
-        .refreshable {
-            guard let user = authStore.user else {
-                return
-            }
-            await postStore.loadUserPosts(userId: user.id)
-            if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
-                        trips = fetchedTrips
-                    }
-            
-            extraPosts = postsNotInAnyTrip()
-            
-        }
+        
         .task {
             guard let user = authStore.user else {
                 return
