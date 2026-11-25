@@ -15,15 +15,17 @@ struct TripDetailView: View {
     
     var trip: Trip
     @State var posts: [Post]
+    @State var usersInTrip: [AppUser] = []
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 15) {
                 Text(trip.name).font(.title2)
                 HStack{
                     Spacer()
                     TripDatesElement(startDate: trip.created_at, endDate: trip.ended_at ?? "Now")
                 }
+                UsersInTripElement(tripUsers: usersInTrip)
                 Text(trip.description)
                 TripMapElement(posts: posts)
             }
@@ -40,12 +42,16 @@ struct TripDetailView: View {
             let otherMemberPosts = await tripService.getOtherUsersPostsInTrip(tripId: trip.id)
             
             posts = otherMemberPosts
+            
+            usersInTrip = await tripService.getUsersInTrip(tripId: trip.id)
         }
         .refreshable {
             //load trips for all users
             let otherMemberPosts = await tripService.getOtherUsersPostsInTrip(tripId: trip.id)
             
             posts = otherMemberPosts
+            
+            usersInTrip = await tripService.getUsersInTrip(tripId: trip.id)
         }
     }
 }
