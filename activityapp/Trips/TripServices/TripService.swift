@@ -229,7 +229,7 @@ struct TripService {
                 .from("trips")
                 .select()
                 .in("id", values: tripIds)
-                .order("created_at", ascending: true)
+                .order("created_at", ascending: false)
                 .execute()
                 .value
 
@@ -242,7 +242,7 @@ struct TripService {
     
     func getUserTrips(userId: String) async -> [UserTrip]? {
         do {
-            let fetched: [UserTrip] = try await SupabaseHandler.client.from("trip_friend").select().eq("user_id", value: userId).order("created_at", ascending: true).execute().value
+            let fetched: [UserTrip] = try await SupabaseHandler.client.from("trip_friend").select().eq("user_id", value: userId).order("created_at", ascending: false).execute().value
             return fetched
         } catch {
             print(error)
@@ -252,7 +252,7 @@ struct TripService {
     
     func getUsersInTrip(tripId: String) async -> [AppUser] {
         do {
-            let fetchedUserTrips: [UserTrip] = try await SupabaseHandler.client.from("trip_friend").select().eq("trip_id", value: tripId).order("created_at", ascending: true).execute().value
+            let fetchedUserTrips: [UserTrip] = try await SupabaseHandler.client.from("trip_friend").select().eq("trip_id", value: tripId).order("created_at", ascending: false).execute().value
             
             guard !fetchedUserTrips.isEmpty else {
                 return []
@@ -260,7 +260,7 @@ struct TripService {
 
             let userIds = fetchedUserTrips.map { $0.user_id }
             
-            let fetchedUsers: [AppUser] = try await SupabaseHandler.client.from("profiles").select().in("id", values: userIds).order("created_at", ascending: true)
+            let fetchedUsers: [AppUser] = try await SupabaseHandler.client.from("profiles").select().in("id", values: userIds).order("created_at", ascending: false)
                 .execute()
                 .value
             

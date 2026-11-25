@@ -12,11 +12,11 @@ struct AccountView: View {
     @EnvironmentObject var authStore: AuthStore
     @EnvironmentObject var postStore: PostStore
     @EnvironmentObject var countriesVisitedStore: CountriesVisitedStore
-    //@EnvironmentObject var tripStore: TripStore
-    var tripService = TripService()
+    @EnvironmentObject var tripStore: TripStore
+
     var retrievePostService = RetrievePostService()
     
-    @State var trips: [Trip] = []
+    //@State var trips: [Trip] = []
     @State var extraPosts: [Post] = []
     
     @ObservedObject var pendingStore = PendingPostService.shared
@@ -32,7 +32,7 @@ struct AccountView: View {
     
     private func postsNotInAnyTrip() -> [Post] {
         let allTripPosts = Set(
-            trips.flatMap { postsInTrip($0) }.map { $0.id }
+            tripStore.trips.flatMap { postsInTrip($0) }.map { $0.id }
         )
 
         return postStore.userPosts.filter { !allTripPosts.contains($0.id) }
@@ -74,7 +74,7 @@ struct AccountView: View {
                             .padding(.top, 20)
                             .padding(.bottom, 20)
                         }
-                        TripListElement(level: 1, trips: trips)
+                        TripListElement(level: 1, trips: tripStore.trips)
                         HStack{
                             Text("Posts not in trip").font(.title3)
                             Spacer()
@@ -98,9 +98,7 @@ struct AccountView: View {
                     return
                 }
                 await postStore.loadUserPosts(userId: user.id)
-                if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
-                            trips = fetchedTrips
-                        }
+                await tripStore.loadTrips(userId: user.id)
                 
                 extraPosts = postsNotInAnyTrip()
                 
@@ -113,9 +111,7 @@ struct AccountView: View {
                 return
             }
             await postStore.loadUserPosts(userId: user.id)
-            if let fetchedTrips = await tripService.getUsersTrips(userId: user.id) {
-                        trips = fetchedTrips
-                    }
+            await tripStore.loadTrips(userId: user.id)
             
             extraPosts = postsNotInAnyTrip()
             
