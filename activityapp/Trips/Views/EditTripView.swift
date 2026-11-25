@@ -20,6 +20,8 @@ struct EditTripView: View {
     @State private var tripStartDate = Date()
     @State private var tripEndDate = Date()
     
+    @State var leftTrip = false
+    
     var dateFormatterService = DateFormatterService()
     
     @EnvironmentObject var authStore: AuthStore
@@ -97,7 +99,7 @@ struct EditTripView: View {
                         .stroke(Color.dark.opacity(0.5), lineWidth: 2)
                 )
                 
-                NavigationLink(destination: TripUsersView(trip: trip), label: {
+                NavigationLink(destination: TripUsersView(trip: trip, done: $leftTrip), label: {
                     HStack{
                         Text("Add friends to trip")
                         Image(systemName: "chevron.right")
@@ -131,6 +133,12 @@ struct EditTripView: View {
                 }
                 
             }
+            .onChange(of: leftTrip){
+                print("dismiss")
+                print(leftTrip)
+                dismiss()
+            }
+
         }
     }
 }

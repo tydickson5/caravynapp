@@ -86,12 +86,18 @@ class TripStore: ObservableObject {
         
     }
     
-    func removeUserFromTrip(tripId: String, userId: String) async {
+    func removeUserFromTrip(tripId: String, userId: String) async -> Bool{
         
         isLoading = true
         defer{isLoading = false}
         
-        _ = await tripService.removeUserFromTrip(tripId: tripId, userId: userId, backendService: backendService)
+        let response = await tripService.removeUserFromTrip(tripId: tripId, userId: userId, backendService: backendService)
+        
+        if(response){
+            trips.removeAll{$0.id == tripId}
+        }
+        
+        return response
     }
     
     func getTripById(tripId: String) async -> Trip? {

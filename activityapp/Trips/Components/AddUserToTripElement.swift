@@ -14,6 +14,7 @@ struct AddUserToTripElement: View {
     var trip: Trip
     @State var peopleInTrip: [AppUser] = []
     @State var friendsNotInTrip: [AppUser] = []
+    @Binding var done: Bool
     
     @EnvironmentObject var friendStore: FriendStore
     @EnvironmentObject var authStore: AuthStore
@@ -103,8 +104,11 @@ struct AddUserToTripElement: View {
             Button(action: {
                 Task {
                     if let userId = authStore.user?.id {
-                        let _ = await tripStore.removeUserFromTrip(tripId: trip.id, userId: userId)
-                        await reloadUserGroups()
+                        let response = await tripStore.removeUserFromTrip(tripId: trip.id, userId: userId)
+                        print(response)
+                        if(response){
+                            done = true
+                        }
                     }
                     
                 }
@@ -114,6 +118,7 @@ struct AddUserToTripElement: View {
                     .frame(height: 15)
                     .tint(.white)
             }
+            .disabled(tripStore.isLoading)
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 8)

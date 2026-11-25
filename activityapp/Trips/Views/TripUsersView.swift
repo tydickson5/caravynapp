@@ -10,14 +10,17 @@ import SwiftUI
 struct TripUsersView: View {
     
     var trip: Trip
-    //@Binding var done: Bool
+    @Binding var done: Bool
     
     var body: some View {
         VStack{
             
-            AddUserToTripElement(trip: trip)
+            AddUserToTripElement(trip: trip, done: $done)
             
         }
         .padding()
+        .onChange(of: done){
+            print(done)
+        }
     }
 }

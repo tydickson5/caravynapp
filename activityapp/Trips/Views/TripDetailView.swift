@@ -20,7 +20,12 @@ struct TripDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 15) {
-                Text(trip.name).font(.title2)
+                HStack{
+                    Text(trip.name).font(.title2)
+                    Spacer()
+                    
+                }
+                
                 HStack{
                     Spacer()
                     TripDatesElement(startDate: trip.created_at, endDate: trip.ended_at ?? "Now")
